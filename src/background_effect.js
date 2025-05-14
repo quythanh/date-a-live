@@ -41,8 +41,7 @@ offset = {
 
 let charaEffect = JSON.parse(httpGet("data/bgeffect.json"));
 
-
-var bgEffect = {
+const bgEffect = {
 	list : {},
 	isLoaded : false,
 
@@ -83,7 +82,7 @@ var bgEffect = {
 					bgEffect.list['bgEffect' + i].scale = s.scale.x;
 				}
 				bgEffect.addSetting(l2dViewer);
-				PIXI.loader.reset();		
+				PIXI.loader.reset();
 			});
 		}
 	},
@@ -95,7 +94,7 @@ var bgEffect = {
 		for(;n<l2dViewer.app.stage.children.length;n++) {
 			if(l2dViewer.app.stage.children[n].constructor.name == "Spine") {
 				break;
-				
+
 			}
 		}
 		for(var i in bgEffect.list) {
@@ -184,7 +183,7 @@ var bgEffect = {
 			}
 		})
 		}
-		
+
 	},
 
 	changePosX : function(index, value, l2dViewer) {
@@ -198,4 +197,3 @@ var bgEffect = {
 		l2dViewer.app.stage.children[index].scale.y = value / 100;
 	},
 };
-
