@@ -53,22 +53,21 @@ $(() => {
 });
 
 $(() => {
-  if (Modernizr.history) {
-    // history is supported; do magical things
-    $('ul.pagenav>li>a').on('click', function(e) {
-      $('.selected').removeClass('selected');
-      $(this).parent().addClass('selected');
-      e.preventDefault();
-      const _href = $(this).attr("href") ?? "index.html";
-      loadContent(_href);
-      $('#buttonNav').trigger("click");
-    })
-  } else {
-    // history is not supported; nothing fancy here
-  }
+  // history is not supported; nothing fancy here
+  if (!Modernizr.history) return;
+
+  // history is supported; do magical things
+  $('ul.pagenav>li>a').on('click', (e) => {
+    $('.selected').removeClass('selected');
+    $(e.target).parent().addClass('selected');
+    e.preventDefault();
+    const _href = $(e.target).attr("href") ?? "index.html";
+    loadContent(_href);
+    $('#buttonNav').trigger("click");
+  })
 });
 
-$(window).on("popstate", () => {
+window.onpopstate = () => {
   const link = location.pathname.replace(/^.*[\\/]/, ""); // get filename only
   loadContent(link);
-});
+}
