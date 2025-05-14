@@ -64,10 +64,10 @@ const bgEffect = {
   backgroundEffect: {
     add: (data: string[], l2dViewer) => {
       for (let i = 0; i < data.length; i++) {
-        PIXI.loader.add(`bgEffect${i}`, data[i].split(':')[0]);
+        PIXI.Loader.shared.add(`bgEffect${i}`, data[i].split(':')[0]);
       }
 
-      PIXI.loader.load((loader, res) => {
+      PIXI.Loader.shared.load((loader, res) => {
         for (let i = 0; i < data.length; i++) {
           const s = new PIXI.spine.Spine(res[`bgEffect${i}`].spineData);
 
@@ -84,7 +84,7 @@ const bgEffect = {
           bgEffect.list[`bgEffect${i}`].scale = s.scale.x;
         }
         bgEffect.addSetting(l2dViewer);
-        PIXI.loader.reset();
+        PIXI.Loader.shared.reset();
       });
     }
   },

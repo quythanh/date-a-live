@@ -328,7 +328,7 @@
           if(this._animation) {
             this._animation.loop = document.getElementById('mloop').checked;
           }
-          
+
         if (this._animation == null || (!this._animation.loop && this._time > this._animation.duration)) {
           this.stop()
           this._animation = null
@@ -1490,14 +1490,14 @@
         renderer.state.setFrontFace(0)
       }
       return CubismMesh
-    }(PIXI.mesh.Mesh))
+    }(PIXI.SimpleMesh))
     LIVE2DCUBISMPIXI.CubismMesh = CubismMesh
   })(LIVE2DCUBISMPIXI || (LIVE2DCUBISMPIXI = {}))
 
   class L2D {
     constructor (basePath) {
       this.basePath = basePath
-      this.loader = new PIXI.loaders.Loader(this.basePath)
+      this.loader = new PIXI.Loader(this.basePath)
       this.animatorBuilder = new LIVE2DCUBISMFRAMEWORK.AnimatorBuilder()
       this.timeScale = 1
       this.models = {}
@@ -1521,10 +1521,10 @@
         const motionNames = []
         const modelNames = []
 
-        
+
 
         // if (!modelNames.includes(name+'_model')){
-        this.loader.add(name + '_model', modelDir + modelPath, { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.JSON })
+        this.loader.add(name + '_model', modelDir + modelPath, { xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON })
         modelNames.push(name + '_model')
         // }
 
@@ -1532,7 +1532,7 @@
           const model3Obj = resources[name + '_model'].data
 
           if (typeof (model3Obj.FileReferences.Moc) !== 'undefined') {
-            loader.add(name + '_moc', modelDir + model3Obj.FileReferences.Moc, { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.BUFFER })
+            loader.add(name + '_moc', modelDir + model3Obj.FileReferences.Moc, { xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.BUFFER })
           }
 
           if (typeof (model3Obj.FileReferences.Textures) !== 'undefined') {
@@ -1543,7 +1543,7 @@
           }
 
           if (typeof (model3Obj.FileReferences.Physics) !== 'undefined') {
-            loader.add(name + '_physics', modelDir + model3Obj.FileReferences.Physics, { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.JSON })
+            loader.add(name + '_physics', modelDir + model3Obj.FileReferences.Physics, { xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON })
           }
 
           if (typeof (model3Obj.FileReferences.Motions) !== 'undefined') {
@@ -1551,7 +1551,7 @@
               model3Obj.FileReferences.Motions[group].forEach((element) => {
                 const motionName = element.File.split('/').pop().split('.').shift()
                 if (!motionNames.includes(name + '_' + motionName)) {
-                  loader.add(name + '_' + motionName, modelDir + element.File, { xhrType: PIXI.loaders.Resource.XHR_RESPONSE_TYPE.JSON })
+                  loader.add(name + '_' + motionName, modelDir + element.File, { xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON })
                   motionNames.push(name + '_' + motionName)
                 } else {
                   var n = name + '_' + motionName + String(Date.now())
@@ -1681,7 +1681,7 @@
         this.model.update(deltaTime)
         this.model.masks.update(this.app.renderer)
       })
-      
+
       window.onresize = (event) => {
         if (event === undefined) { event = null }
         this.app.view.style.width = width + 'px'
@@ -1762,7 +1762,7 @@
 
         this.isClick = false
         this.model.inDrag = false
-        
+
       })
     }
 
@@ -1773,7 +1773,7 @@
       this.model.update = this.onUpdate
       this.model.animator.addLayer('base', LIVE2DCUBISMFRAMEWORK.BuiltinAnimationBlenders.OVERRIDE, 1)
       //background
-      const foreground = PIXI.Sprite.fromImage(bg);
+      const foreground = PIXI.Sprite.from(bg);
       //calculator
       if(foreground.height != 1) {
         var hRatio =  foreground.height / window.innerHeight;
@@ -1800,7 +1800,7 @@
         foreground.width *= ratio;
         foreground.height *= ratio;
       }
-      foreground.texture.baseTexture.on('loaded',function() {  
+      foreground.texture.baseTexture.on('loaded',function() {
         var hRatio =  foreground.height / window.innerHeight;
         var wRatio =  foreground.width / window.innerWidth;
         var ratio;
@@ -1830,14 +1830,14 @@
       this.app.stage.addChild(foreground);
       bgEffect.backgroundManager(folderName, this);
       let temp = this;
-      var waitBg = setInterval(function() { 
+      var waitBg = setInterval(function() {
         if(bgEffect.isLoaded) {
           clearInterval(waitBg);
           temp.app.stage.addChild(temp.model)
           temp.app.stage.addChild(temp.model.masks)
         }
       }, 500)
-      
+
 
       window.onresize()
     }
@@ -1911,14 +1911,14 @@
 
       if(this.audio) this.audio.pause()
       let mmotions = JSON.parse(httpGet(this.basePath + '/' + this.folderName + '/' +this.modelName + '.model3.json'));
-      
+
       for(var i in mmotions.FileReferences.Motions) {
         if(i.toLowerCase() == motionId) {
           if(mmotions.FileReferences.Motions[i][0].Sound) {
             let audioPath = 'assets/res/basic/'+ mmotions.FileReferences.Motions[i][0].Sound;
             this.audio = new Audio(audioPath);
             this.audio.play()
-            
+
             this.audio.addEventListener('canplay', function() {l.play(m)}, false);
              //subtitle
              if(!document.getElementById('subtitle').checked) break;
@@ -1952,9 +1952,9 @@
       }
       //pls timeout alternative
       //setTimeout(function(){l.play(m)},650)
-      
+
       //external audio
-      
+
     }
 
     isHit (id, posX, posY) {
@@ -2044,7 +2044,7 @@
     var l2d = new L2D(basePath);
     l2dViewer.bg = bg;
     l2d.load(folderName, modelName, l2dViewer, bg);
-    
+
   }
 
   changeBackground = function(bgPath, l2dViewer) {
