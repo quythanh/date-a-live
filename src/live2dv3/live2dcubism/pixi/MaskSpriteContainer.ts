@@ -1,0 +1,94 @@
+class MaskSpriteContainer extends PIXI.Container {
+  constructor(coreModel, pixiModel) {
+    super();
+    this._maskShaderVertSrc = `
+      attribute vec2 aVertexPosition;
+      attribute vec2 aTextureCoord;
+      uniform mat3 projectionMatrix;
+      varying vec2 vTextureCoord;
+      void main(void) {
+        gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+        vTextureCoord = aTextureCoord;
+      }
+    `;
+    this._maskShaderFragSrc = `
+      varying vec2 vTextureCoord;
+      uniform sampler2D uSampler;
+      void main(void) {
+        vec4 c = texture2D(uSampler, vTextureCoord);
+        c.r = c.a;
+        c.g = 0.0;
+        c.b = 0.0;
+        gl_FragColor = c;
+      }
+    `;
+    this._maskShader = new PIXI.Filter(this._maskShaderVertSrc.toString(), this._maskShaderFragSrc.toString());
+
+    const _maskCounts = coreModel.drawables.maskCounts;
+    const _maskRelationList = coreModel.drawables.masks;
+    this._maskMeshContainers = [];
+    this._maskTextures = [];
+    this._maskSprites = [];
+
+    for (let m = 0; m < pixiModel.meshes.length; ++m) {
+      if (_maskCounts[m] > 0) {
+        const newContainer = new PIXI.Container();
+        for (let n = 0; n < _maskRelationList[m].length; ++n) {
+          const meshMaskID = coreModel.drawables.masks[m][n];
+          const maskMesh = new CubismMesh(
+            pixiModel.meshes[meshMaskID].texture,
+            pixiModel.meshes[meshMaskID].vertices,
+            pixiModel.meshes[meshMaskID].uvs,
+            pixiModel.meshes[meshMaskID].indices,
+            PIXI.DRAW_MODES.TRIANGLES,
+          );
+          maskMesh.name = pixiModel.meshes[meshMaskID].name;
+          maskMesh.transform = pixiModel.meshes[meshMaskID].transform;
+          maskMesh.worldTransform = pixiModel.meshes[meshMaskID].worldTransform;
+          maskMesh.localTransform = pixiModel.meshes[meshMaskID].localTransform;
+          maskMesh.isCulling = pixiModel.meshes[meshMaskID].isCulling;
+          maskMesh.isMaskMesh = true;
+          maskMesh.filters = [this._maskShader];
+          newContainer.addChild(maskMesh);
+        }
+        newContainer.transform = pixiModel.transform;
+        newContainer.worldTransform = pixiModel.worldTransform;
+        newContainer.localTransform = pixiModel.localTransform;
+        this._maskMeshContainers.push(newContainer);
+        const newTexture = PIXI.RenderTexture.create(0, 0);
+        this._maskTextures.push(newTexture);
+        const newSprite = new PIXI.Sprite(newTexture);
+        this._maskSprites.push(newSprite);
+        this.addChild(newSprite);
+        pixiModel.meshes[m].mask = newSprite;
+      }
+    }
+  }
+
+  get maskSprites() {
+    return this._maskSprites;
+  }
+
+  get maskMeshes() {
+    return this._maskMeshContainers;
+  }
+
+  destroy(options) {
+    this._maskSprites.forEach((m) => m.destroy());
+    this._maskTextures.forEach((m) => m.destroy());
+    this._maskMeshContainers.forEach((m) => m.destroy());
+    this._maskShader = null;
+  }
+
+  update(appRenderer) {
+    for (let m = 0; m < this._maskSprites.length; ++m) {
+      appRenderer.render(this._maskMeshContainers[m], this._maskTextures[m], true, null, false);
+    }
+  }
+
+  resize(viewWidth, viewHeight) {
+    for (let m = 0; m < this._maskTextures.length; ++m) {
+      this._maskTextures[m].resize(viewWidth, viewHeight, false);
+    }
+  }
+}
