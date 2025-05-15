@@ -1,13 +1,16 @@
 class UserDataBuilder {
-  setTarget = function (value) {
+  private _target;
+  private _userData3Json;
+
+  setTarget(value) {
     this._target = value;
     return this;
   };
-  setUserData3Json = function (value) {
+  setUserData3Json(value) {
     this._userData3Json = value;
     return value;
   };
-  build = function () {
+  build() {
     return UserData._fromUserData3Json(this._target, this._userData3Json);
   };
 }
