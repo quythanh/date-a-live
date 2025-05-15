@@ -24,7 +24,10 @@ class Model extends PIXI.Container {
 
     this._meshes = new Array(this._coreModel.drawables.ids.length);
     for (let m = 0; m < this._meshes.length; ++m) {
-      const uvs = [...this._coreModel.drawables.vertexUvs[m]];
+      // console.log(Object.prototype.toString.call(this._coreModel.drawables.vertexUvs[m]));
+      //   --> [object Float32Array]
+      //   => const uvs = [...this._coreModel.drawables.vertexUvs[m]] NOT WORK
+      const uvs = this._coreModel.drawables.vertexUvs[m].slice();
       for (let v = 1; v < uvs.length; v += 2) {
         uvs[v] = 1 - uvs[v];
       }
