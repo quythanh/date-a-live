@@ -83,7 +83,7 @@ var dailyDate = {
       //console.log(i);
       const guide = document.createElement('li');
       guide.classList.add('guidebox');
-      guide.innerHTML = data.spirit[spirit].date[location].text[data.spirit[spirit].date[location].ending[route][int].guide[i]];
+      guide.textContent = data.spirit[spirit].date[location].text[data.spirit[spirit].date[location].ending[route][int].guide[i]];
       $('#guidelist').append(guide);
       //console.log(data.spirit[spirit].date[location].text[i])
     }
@@ -141,14 +141,10 @@ var dailyDate = {
     $("#locationlist li").on("click", (e) => {
       if (e.target.id == selectedLocation) return;
 
-      //banish name
-      $("#name").html('');
-      //vanish cg
+      $("#name").text('');
       $("div").remove(".cg");
-      //banish route
       selectedRoute = '';
-      //banish guide
-      $('#guidelist').html('');
+      $('#guidelist').text('');
 
       $(e.target).css('background', '#ca3e47');
       if (selectedLocation !== '') {
@@ -156,17 +152,17 @@ var dailyDate = {
         //console.log('ayy ' + selectedLocation);
       }
       selectedLocation = e.target.id;
-      $('#routelist').html('');
       dailyDate.loadRoute(selected, e.target.id.substring(1));
+      $('#routelist').text('');
       $('#routelist').show();
     });
   },
 
   loadFavorite : (spirit) => {
-    $('#gift1d').html(data.spirit[spirit].data.like.gift[1])
-    $('#gift2d').html(data.spirit[spirit].data.like.food[1])
     $('#gift1').attr("src", `assets/res/basic/icon/item/gift/${data.spirit[spirit].data.like.gift[0]}.png`);
     $('#gift2').attr("src", `assets/res/basic/icon/item/food/${data.spirit[spirit].data.like.food[0]}.png`);
+    $('#gift1d').text(data.spirit[spirit].data.like.gift[1])
+    $('#gift2d').text(data.spirit[spirit].data.like.food[1])
   }
 }
 
