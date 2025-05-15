@@ -32,3 +32,12 @@ header ul {
   padding-left:10px;
 }
 
+footer {
+   position: fixed;
+   right: 0;
+   bottom: 0;
+   width: max-content;
+   padding: 8px;
+   background-color: #313131;
+   color: white;
+}
