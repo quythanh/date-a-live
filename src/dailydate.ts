@@ -62,18 +62,20 @@ var dailyDate = {
     $(`#${selected}`).addClass('selected');
     dailyDate.loadLocation(selected);
 
-    $('.spirit').on("click", (e) => {
+    $('.spirit').on("click", (e: Event) => {
+      const el = e.currentTarget as HTMLDivElement;
+
       $(`#${selected}`).removeClass('selected');
-      $(e.target).addClass('selected');
+      $(el).addClass('selected');
       $('#routelist').hide();
-      selected = e.target.id;
+      selected = el.id;
       localStorage['dalDDSelected'] = selected;
       //nullify #1
       $('#locationlist').text('');
       $('#guidelist').text('');
       $('#routelist').text('');
       $('#name').text('');
-      dailyDate.loadLocation(e.target.id);
+      dailyDate.loadLocation(selected);
 
       //nullify
       selectedLocation = '';
