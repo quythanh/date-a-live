@@ -48,10 +48,9 @@ var dailyDate = {
     // preload images
     dailyDate.preloadImages();
     for (const i in data.spirit) {
-      const img = document.createElement('div');
+      const img = document.createElement('img');
       img.classList.add('thumb');
-      img.style.content = `url("${data.spirit[i].data.img}")`;
-      //img.setAttribute('src',data.spirit[i].data.img)
+      img.src = data.spirit[i].data.img;
 
       const div = document.createElement('div');
       div.classList.add('spirit');
@@ -181,10 +180,10 @@ var dailyDate = {
   },
 
   loadFavorite : (spirit) => {
-    $('#gift1').css("content", `url("assets/res/basic/icon/item/gift/${data.spirit[spirit].data.like.gift[0]}.png")`);
-    $('#gift2').css("content", `url("assets/res/basic/icon/item/food/${data.spirit[spirit].data.like.food[0]}.png")`);
     $('#gift1d').html(data.spirit[spirit].data.like.gift[1])
     $('#gift2d').html(data.spirit[spirit].data.like.food[1])
+    $('#gift1').attr("src", `assets/res/basic/icon/item/gift/${data.spirit[spirit].data.like.gift[0]}.png`);
+    $('#gift2').attr("src", `assets/res/basic/icon/item/food/${data.spirit[spirit].data.like.food[0]}.png`);
   }
 }
 
