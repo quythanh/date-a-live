@@ -4,8 +4,8 @@ let selectedLocation: string = '';
 let selectedRoute: string = '';
 const data = JSON.parse(httpGet('assets/res/data/dailydate.json'));
 
-var dailyDate = {
-  loadData : () => {
+const dailyDate = {
+  loadData: () => {
     if (localStorage['dalDDSelected']) {
       selected = localStorage['dalDDSelected'];
     }
@@ -17,15 +17,14 @@ var dailyDate = {
     }
   },
 
-  dismissLoading : () => {
+  dismissLoading: () => {
     $('.loadingcontainer').addClass('out');
     setTimeout(() => {
       $('div').remove('.loadingcontainer');
     }, 500)
   },
 
-  init : () => {
-    // dismiss loading
+  init: () => {
     $('#dismissLoading').on("click", () => {
       dailyDate.dismissLoading();
     })
@@ -76,7 +75,7 @@ var dailyDate = {
     })
   },
 
-  loadGuide : (spirit, location, route, int) => {
+  loadGuide: (spirit: string, location: string, route: string, int: string) => {
     $("div").remove(".cg");
 
     for (let i = 0; i < data.spirit[spirit].date[location].ending[route][int].guide.length; i++) {
@@ -104,7 +103,7 @@ var dailyDate = {
     }
   },
 
-  loadRoute : (spirit, location) => {
+  loadRoute: (spirit: string, location: string) => {
     for (const i in data.spirit[spirit].date[location].ending) { //i want to delete ending part
       for (const t in data.spirit[spirit].date[location].ending[i]) {
         const route = document.createElement('li');
@@ -114,11 +113,12 @@ var dailyDate = {
         $('#routelist').append(route);
       }
     }
-    $("#routelist li").on("click", (e) => {
-      const routeId = e.target.id;
+    $("#routelist li").on("click", (e: Event) => {
+      const el = e.target as HTMLLIElement;
+      const routeId = el.id;
 
       if (routeId == selectedRoute) return;
-      $(e.target).css('background', '#ca3e47');
+      $(el).css('background', '#ca3e47');
       if (selectedRoute != '') {
         $(`#${selectedRoute}`).css('background', '#313131');
       }
@@ -129,7 +129,7 @@ var dailyDate = {
     });
   },
 
-  loadLocation : (spirit) => {
+  loadLocation: (spirit: string) => {
     dailyDate.loadFavorite(spirit);
     for (const i in data.spirit[spirit].date) {
       const location = document.createElement('li');
@@ -138,27 +138,32 @@ var dailyDate = {
       location.id = `d${i}`;
       $('#locationlist').append(location);
     }
-    $("#locationlist li").on("click", (e) => {
-      if (e.target.id == selectedLocation) return;
+    $("#locationlist li").on("click", (e: Event) => {
+      const el = e.target as HTMLLIElement;
+      if (el.id == selectedLocation) return;
 
+      // banish name
       $("#name").text('');
+      // vanish cg
       $("div").remove(".cg");
+      // banish route
       selectedRoute = '';
+      // banish guide
       $('#guidelist').text('');
 
-      $(e.target).css('background', '#ca3e47');
+      $(el).css('background', '#ca3e47');
       if (selectedLocation !== '') {
         $(`#${selectedLocation}`).css('background', '#313131');
         //console.log('ayy ' + selectedLocation);
       }
-      selectedLocation = e.target.id;
-      dailyDate.loadRoute(selected, e.target.id.substring(1));
+      selectedLocation = el.id;
       $('#routelist').text('');
+      dailyDate.loadRoute(selected, el.id.substring(1));
       $('#routelist').show();
     });
   },
 
-  loadFavorite : (spirit) => {
+  loadFavorite: (spirit: string) => {
     $('#gift1').attr("src", `assets/res/basic/icon/item/gift/${data.spirit[spirit].data.like.gift[0]}.png`);
     $('#gift2').attr("src", `assets/res/basic/icon/item/food/${data.spirit[spirit].data.like.food[0]}.png`);
     $('#gift1d').text(data.spirit[spirit].data.like.gift[1])
