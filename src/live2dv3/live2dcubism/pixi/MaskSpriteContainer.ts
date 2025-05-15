@@ -1,4 +1,11 @@
 class MaskSpriteContainer extends PIXI.Container {
+  private _maskShaderVertSrc: string;
+  private _maskShaderFragSrc: string;
+  private _maskShader: PIXI.Filter;
+  private _maskMeshContainers;
+  private _maskTextures;
+  private _maskSprites;
+
   constructor(coreModel, pixiModel) {
     super();
     this._maskShaderVertSrc = `

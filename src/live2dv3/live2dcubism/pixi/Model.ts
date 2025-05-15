@@ -5,7 +5,7 @@ class Model extends PIXI.Container {
   private _physicsRig;
   private _userData;
   private _groups;
-  private _meshes;
+  private _meshes: CubismMesh[];
   private _maskSpriteContainer: MaskSpriteContainer;
 
   constructor(coreModel, textures, animator, physicsRig = null, userData = null, groups = null) {
