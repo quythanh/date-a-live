@@ -213,7 +213,7 @@ const Live2DViewer = {
       folderName,
       sizeLimit: false,
       width: window.innerWidth,
-      height: window.innerHeight,
+      height: window.innerHeight - 50,
       mobileLimit: false
     });
   }
