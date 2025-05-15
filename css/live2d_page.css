@@ -2,7 +2,6 @@
     transition: all 0.5s ease;
 }
 
-
 .l2dv3-sidenav {
     background-color: #313131;
     height: 100%;
@@ -204,15 +203,15 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
+  box-shadow: inset 0 0 5px grey;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #ca3e47; 
+  background: #ca3e47;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #ca3e47; 
+  background: #ca3e47;
 }
