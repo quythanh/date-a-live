@@ -41,7 +41,7 @@ const Live2DViewer = {
   },
 
   switchBgType: (type: BackgroundType, isAdd = false) => {
-    const bg = JSON.parse(httpGet('data/bg.json'));
+    const bg = JSON.parse(httpGet('assets/res/data/bg.json'));
     //to do without reload, faster loading
     selectedBgType = type;
     $('.bgCategory').removeClass('selected');
@@ -128,7 +128,7 @@ const Live2DViewer = {
   },
 
   init: () => {
-    const models = JSON.parse(httpGet('data/live2dv3_models.json'));
+    const models = JSON.parse(httpGet('assets/res/data/live2dv3_models.json'));
     for (const i in models) {
       const opt = document.createElement('option');
       opt.value = i;

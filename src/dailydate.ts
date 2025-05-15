@@ -2,7 +2,7 @@
 let selected: string = 'tohka';
 let selectedLocation: string = '';
 let selectedRoute: string = '';
-const data = JSON.parse(httpGet('data/dailydate.json'));
+const data = JSON.parse(httpGet('assets/res/data/dailydate.json'));
 
 var dailyDate = {
   loadData : () => {
@@ -180,7 +180,7 @@ var dailyDate = {
 
   loadFavorite : (spirit) => {
     $('#gift1').css("content", `url("assets/res/basic/icon/item/gift/${data.spirit[spirit].data.like.gift[0]}.png")`);
-    $('#gift2').css("content", `url("assets/res/basic/icon/item/gift/${data.spirit[spirit].data.like.food[0]}.png")`);
+    $('#gift2').css("content", `url("assets/res/basic/icon/item/food/${data.spirit[spirit].data.like.food[0]}.png")`);
     $('#gift1d').html(data.spirit[spirit].data.like.gift[1])
     $('#gift2d').html(data.spirit[spirit].data.like.food[1])
   }

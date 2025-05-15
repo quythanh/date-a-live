@@ -39,7 +39,7 @@ path = "effect/dating/ui_superKanban_12504/junai_kanban",
 action = "texiao_qian",
 */
 
-const charaEffect = JSON.parse(httpGet("data/bgeffect.json"));
+const charaEffect = JSON.parse(httpGet("assets/res/data/bgeffect.json"));
 
 const bgEffect = {
   list: {},

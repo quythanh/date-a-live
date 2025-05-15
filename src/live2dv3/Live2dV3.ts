@@ -380,7 +380,7 @@ class Live2dV3 {
 					);
 					//subtitle
 					if (!document.getElementById("subtitle").checked) break;
-					const subtitleJSON = JSON.parse(httpGet("data/subtitle.json"));
+					const subtitleJSON = JSON.parse(httpGet("assets/res/data/subtitle.json"));
 					if (subtitleJSON[this.folderName]) {
 						if (subtitleJSON[this.folderName][motionId]) {
 							const subtitleElement =

@@ -3,7 +3,7 @@
     "tohka": {
       "data": {
         "name": "Yatogami Tohka",
-        "img": "https://newsimg.5054399.com/uploads/userup/1811/2314403Tb8.jpg",
+        "img": "assets/res/basic/icon/spirit/tohka.jpg",
         "like":{
           "gift":[535073, "Cherry Hair Tie"],
           "food":[534062, "Kinako Bread"]
@@ -258,7 +258,7 @@
     "yoshino":{
       "data":{
         "name":"Yoshino Himekawa",
-        "img":"https://newsimg.5054399.com/uploads/userup/1811/2314431K951.jpg",
+        "img":"assets/res/basic/icon/spirit/yoshino.jpg",
         "like":{
           "gift":[535232, "Starry Sky Decoration"],
           "food":[534152, "Cocoa Milk"]
@@ -564,7 +564,7 @@
     "origami":{
       "data":{
         "name":"Tobichii Origami",
-        "img":"https://newsimg.5054399.com/uploads/userup/1811/231443302249.jpg",
+        "img":"assets/res/basic/icon/spirit/origami.jpg",
         "like":{
           "gift":[535173, "Cute Bunny"],
           "food":[534242, "Spiced Ramen"]
@@ -1034,7 +1034,7 @@
     "kurumi":{
       "data":{
         "name":"Tokisaki Kurumi",
-        "img":"https://newsimg.5054399.com/uploads/userup/1811/2314405W617.jpg",
+        "img":"assets/res/basic/icon/spirit/kurumi.jpg",
         "like":{
           "gift":[535132, "Fox Baby"],
           "food":[534222, "Vegetable Platter"]
@@ -1321,7 +1321,7 @@
     "miku":{
       "data":{
         "name":"Miku",
-        "img":"https://newsimg.5054399.com/uploads/userup/1903/24161FO546.jpg",
+        "img":"assets/res/basic/icon/spirit/miku.jpg",
         "like":{
           "gift":[535201, "Romantic Violet"],
           "food":[534073, "Matcha Cake"]
@@ -1407,7 +1407,7 @@
     "kotori":{
       "data":{
         "name":"Itsuka Kotori",
-        "img":"https://newsimg.5054399.com/uploads/userup/1811/2314411041Y.jpg",
+        "img":"assets/res/basic/icon/spirit/kotori.jpg",
         "like":{
           "gift":[535021, "White Headband"],
           "food":[534052, "Pudding Cake"]
@@ -1636,7 +1636,7 @@
     "natsumi":{
       "data":{
         "name":"Natsumi",
-        "img":"https://newsimg.5054399.com/uploads/userup/1901/30193029C08.jpg",
+        "img":"assets/res/basic/icon/spirit/natsumi.png",
         "like":{
           "gift":[535132, "Fox Baby"],
           "food":[534031, "Cheese Tart"]
@@ -1797,7 +1797,7 @@
     "mayuri":{
       "data":{
         "name":"Mayuri",
-        "img":"icon/mayuri.png",
+        "img":"assets/res/basic/icon/spirit/mayuri.png",
         "like":{
           "gift":[535083, "Fate Bracelet"],
           "food":[530211, "Sweet Juice"]
@@ -1962,7 +1962,7 @@
             "You're right",
             "Go towards a corner of the park",
             "Let her hold my hand"
-            
+
           ]
         }
       }
