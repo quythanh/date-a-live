@@ -26,7 +26,7 @@ const changePosition = (x, y, l2dViewer) => {
   l2dViewer.model.position = new PIXI.Point(x, y);
 };
 
-window.l2dViewer = function (options) {
+const l2dViewer = function (options) {
   return new Live2dV3(options)
 }
 

@@ -1,5 +1,23 @@
 class Live2dV3 {
-	constructor({
+  public l2d: L2D;
+  public audio: Audio;
+  public basePath: string;
+  public bg;
+  public modelName: string;
+  public folderName: string;
+  public canvas: HTMLDivElement;
+  public app: PIXI.Application;
+  public model;
+  public animator;
+  public motions;
+  public children;
+
+  private _animator;
+  private _coreModel;
+  private _meshes;
+  private _physicsRig;
+
+  constructor({
 		folderName,
 		basePath,
 		modelName,
@@ -61,8 +79,6 @@ class Live2dV3 {
 			/Mobile|Mac OS|Android|iPhone|iPad/i.test(navigator.userAgent)
 		)
 			return;
-
-		console.log(`Live2dV3: loading model "${modelName}"`);
 
 		this.l2d = new L2D(basePath);
 		//external audio
@@ -327,7 +343,6 @@ class Live2dV3 {
 	}
 
 	startAnimation(motionId, layerId) {
-		console.log(motionId);
 		if (!this.model) {
 			return;
 		}
