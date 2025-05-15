@@ -15,12 +15,7 @@
         <meta name="description" content="Daily Date Guide for Date a Live: Spirit Pledge"/>
     </head>
     <body>
-        <header>
-            <span id="buttonNav">&#9776;</span>
-            <span>Date A Live: Spirit Pledge Toolbox</span>
-        </header>
-
-        <div id="mySidenav" class="sidenav">
+        <nav id="mySidenav" class="sidenav">
             <ul class="nolist pagenav" style="padding-left:0px;margin-top: 10px;">
                 <li>
                     <a href="index.html">Main</a>
@@ -38,62 +33,68 @@
                     </li>
                 </ul>
             </ul>
-        </div>
+        </nav>
 
-        <!--main-->
-        <div id="main-content">
-            <div class='wrapper'>
-                <div class='left'></div>
-                <div class='right'>
-                    <div class='truright'>
-                        <div class="gift">
-                            Favorites
-                            <ul style="list-style-type: none;padding-left: 0;">
-                                <li style="margin-bottom: 20px;">
-                                    <div id="gift1"></div><span id="gift1d"></span>
-                                </li>
+        <div class="container">
+            <header>
+                <span id="buttonNav" onclick="$('#mySidenav').toggleClass('open');">&#9776;</span>
+                <span>Date A Live: Spirit Pledge Toolbox</span>
+            </header>
 
-                                <li>
-                                    <div id="gift2"></div><span id="gift2d"></span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="selection">
-                            <div id="date1">
-                                Avaiable Location(s):
-                                <ul id="locationlist"></ul>
-                            </div>
-                            <div id="date2">
-                                Available Route(s):
-                                <ul id="routelist"><ul>
-                            </div>
-                        </div>
+            <div id="main-content">
+                <div class='wrapper'>
+                    <div class='left'></div>
+                    <div class='right'>
+                        <div class='truright'>
+                            <div class="gift">
+                                Favorites
+                                <ul style="list-style-type: none;padding-left: 0;">
+                                    <li style="margin-bottom: 20px;">
+                                        <div id="gift1"></div><span id="gift1d"></span>
+                                    </li>
 
-                        <div class="guide">
-                            <div id="edinfo">
-                                <p id="name"></p>
+                                    <li>
+                                        <div id="gift2"></div><span id="gift2d"></span>
+                                    </li>
+                                </ul>
                             </div>
-                            Option(s):
-                            <ul id="guidelist"></ul>
+                            <div class="selection">
+                                <div id="date1">
+                                    Avaiable Location(s):
+                                    <ul id="locationlist"></ul>
+                                </div>
+                                <div id="date2">
+                                    Available Route(s):
+                                    <ul id="routelist"><ul>
+                                </div>
+                            </div>
+
+                            <div class="guide">
+                                <div id="edinfo">
+                                    <p id="name"></p>
+                                </div>
+                                Option(s):
+                                <ul id="guidelist"></ul>
+                            </div>
                         </div>
+                    </div>
+
+                </div>
+                <div class="popup hidden">
+                    <div class="poptable">
+                        <div class="poppedcg"></div>
                     </div>
                 </div>
 
-            </div>
-            <div class="popup hidden">
-                <div class="poptable">
-                    <div class="poppedcg"></div>
-                </div>
-            </div>
-
-            <div class="loadingcontainer">
-                <div class="loadingcontainertable">
-                    <div class="lds-ripple">
-                        <div></div>
-                        <div></div>
+                <div class="loadingcontainer">
+                    <div class="loadingcontainertable">
+                        <div class="lds-ripple">
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <div style="color:white;">Loading Assets...</div>
+                        <div id="dismissLoading">Click here if stuck</div>
                     </div>
-                    <div style="color:white;">Loading Assets...</div>
-                    <div id="dismissLoading">Click here if stuck</div>
                 </div>
             </div>
         </div>
@@ -105,7 +106,6 @@
             referrerpolicy="no-referrer"
         ></script>
         <script src="/src/utility.ts"></script>
-        <script src="/src/main.ts"></script>
         <script src="/src/dailydate.ts"></script>
     </body>
 </html>

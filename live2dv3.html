@@ -16,12 +16,7 @@
     </head>
 
     <body>
-        <header>
-            <span id="buttonNav">&#9776;</span>
-            <span>Date A Live: Spirit Pledge Toolbox</span>
-        </header>
-
-        <div id="mySidenav" class="sidenav">
+        <nav id="mySidenav" class="sidenav">
             <ul class="nolist pagenav" style="padding-left:0px;margin-top: 10px;">
                 <li>
                     <a href="index.html">Main</a>
@@ -39,85 +34,92 @@
                     </li>
                 </ul>
             </ul>
-        </div>
+        </nav>
 
-        <div id="main-content">
-            <div>
-                <span style="font-size:30px;cursor:pointer;float: right;color: white;" id="settingButton">&#9881;</span>
-            </div>
-            <div class="l2dv3-sidenav">
-                <label for="model">Live2D Model</label><br>
+        <div class="container">
+            <header>
+                <span id="buttonNav" onclick="$('#mySidenav').toggleClass('open');">&#9776;</span>
+                <span>Date A Live: Spirit Pledge Toolbox</span>
+            </header>
+
+            <div id="main-content">
                 <div>
-                    <select name="model" id="models">
-                    </select>
+                    <span style="font-size:30px;cursor:pointer;float: right;color: white;" id="settingButton">&#9881;</span>
+                </div>
+                <div class="l2dv3-sidenav">
+                    <label for="model">Live2D Model</label><br>
+                    <div>
+                        <select name="model" id="models">
+                        </select>
+                    </div>
+
+                    <br>
+
+                    <label for="motion">Motion</label><br>
+                    <div>
+                        <select name="motion" id="motions">
+                        </select>
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <button onclick="Live2DViewer.bgLoader();" class="customButton">Background</button>
+                    </div>
+
+                    <br>
+
+                    <label for="x">X</label><br>
+                    <div>
+                        <input type="number" name="x" id="posx" min="0" value="0">
+                    </div>
+
+                    <br>
+
+                    <label for="y">Y</label><br>
+                    <div>
+                        <input type="number" name="y" id="posy" min="0" value="0">
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <input type="checkbox" name="mloop" id="mloop" value="0">
+                        <label for="mloop">Loop</label>
+                        <input type="checkbox" name="subtitle" id="subtitle" checked>
+                        <label for="subtitle">Subtitle</label>
+                    </div>
+
+                    <br>
+
+                    <div>
+                        <label>Background Effect</label>
+                        <div id="bg-effect"></div>
+                    </div>
                 </div>
 
-                <br>
-
-                <label for="motion">Motion</label><br>
-                <div>
-                    <select name="motion" id="motions">
-                    </select>
+                <div class="subtitleContainer">
+                    <div class="subtitleTable">
+                        <div class="subtitle"></div>
+                    </div>
                 </div>
 
-                <br>
+                <div class="Canvas" style="position: fixed; left:0px; top: 0px;z-index: -1;" id="L2dCanvas"></div>
 
-                <div>
-                    <button onclick="Live2DViewer.bgLoader();" class="customButton">Background</button>
-                </div>
-
-                <br>
-
-                <label for="x">X</label><br>
-                <div>
-                    <input type="number" name="x" id="posx" min="0" value="0">
-                </div>
-
-                <br>
-
-                <label for="y">Y</label><br>
-                <div>
-                    <input type="number" name="y" id="posy" min="0" value="0">
-                </div>
-
-                <br>
-
-                <div>
-                    <input type="checkbox" name="mloop" id="mloop" value="0">
-                    <label for="mloop">Loop</label>
-                    <input type="checkbox" name="subtitle" id="subtitle" checked>
-                    <label for="subtitle">Subtitle</label>
-                </div>
-
-                <br>
-
-                <div>
-                    <label>Background Effect</label>
-                    <div id="bg-effect"></div>
-                </div>
-            </div>
-
-            <div class="subtitleContainer">
-                <div class="subtitleTable">
-                    <div class="subtitle"></div>
-                </div>
-            </div>
-
-            <div class="Canvas" style="position: fixed; left:0px; top: 0px;z-index: -1;" id="L2dCanvas"></div>
-
-            <div class="bgSelectorContainer">
-                <div class="bgSelectorContainerTable">
-                    <div class="bgSelectorUI">
-                        <div class="title">
-                            Select Background
-                            <div class="bgSelectorCloseButton" onclick="Live2DViewer.closeBgContainer()">X</div>
+                <div class="bgSelectorContainer">
+                    <div class="bgSelectorContainerTable">
+                        <div class="bgSelectorUI">
+                            <div class="title">
+                                Select Background
+                                <div class="bgSelectorCloseButton" onclick="Live2DViewer.closeBgContainer()">X</div>
+                            </div>
+                            <div class="bgCategoryContainer">
+                                <div class="bgCategory selected" onclick="Live2DViewer.switchBgType(0, false)">Normal</div>
+                                <div class="bgCategory" onclick="Live2DViewer.switchBgType(1)">Kanban</div>
+                            </div>
+                            <div class="selector" id="bgNormal"></div>
+                            <div class="selector" id="bgKanban"></div>
                         </div>
-                        <div class="bgCategoryContainer">
-                            <div class="bgCategory selected" onclick="Live2DViewer.switchBgType(0, false)">Normal</div>
-                            <div class="bgCategory" onclick="Live2DViewer.switchBgType(1)">Kanban</div>
-                        </div>
-                        <div class="selector" id="bgNormal"></div>
-                        <div class="selector" id="bgKanban"></div>
                     </div>
                 </div>
             </div>
@@ -150,7 +152,6 @@
             referrerpolicy="no-referrer"
         ></script>
         <script src="/src/utility.ts"></script>
-        <script src="/src/main.ts"></script>
 
         <script src="/src/live2dv3/live2dcubism/framework/animate/AnimationPoint.ts"></script>
         <script src="/src/live2dv3/live2dcubism/framework/animate/AnimationUserDataBody.ts"></script>
