@@ -1,0 +1,53 @@
+.nolist {
+    list-style-type:none;
+}
+
+ul.pagenav > li {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-left: 20px;
+    padding: 10px;
+    cursor: pointer;
+
+    > a {
+        color: #fff;
+        text-decoration: none;
+    }
+}
+
+#buttonNav {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.sidenav {
+    background-color: #313131;
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    left: -250px;
+    overflow-x: hidden;
+    transition: 0.5s ease;
+    color: #fff;
+    padding-top: 0px;
+    padding-left: 0px;
+}
+
+.main-container {
+    width: 100%;
+    height: 100%;
+}
+
+.main-title {
+    width: auto;
+    text-align: center;
+    font-size: 25px;
+    color: white;
+}
+
+.main-subtitle * {
+    color: white;
+    text-align: center;
+}
