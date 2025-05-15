@@ -6,7 +6,6 @@ const LIVE2DCUBISMFRAMEWORK = {
   AnimationTrack,
   Animation,
   BuiltinCrossfadeWeighters,
-  AnimationState,
   BuiltinAnimationBlenders,
   AnimationLayer,
   Animator,
@@ -25,7 +24,6 @@ const LIVE2DCUBISMFRAMEWORK = {
   UserDataBody,
   UserData,
   UserDataBuilder,
-  UserDataTargetType,
   GroupBody,
   Groups,
 };
