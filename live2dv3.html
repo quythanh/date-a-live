@@ -43,61 +43,6 @@
             </header>
 
             <div id="main-content">
-                <div>
-                    <span style="font-size:30px;cursor:pointer;float: right;color: white;" id="settingButton">&#9881;</span>
-                </div>
-                <div class="l2dv3-sidenav">
-                    <label for="model">Live2D Model</label><br>
-                    <div>
-                        <select name="model" id="models">
-                        </select>
-                    </div>
-
-                    <br>
-
-                    <label for="motion">Motion</label><br>
-                    <div>
-                        <select name="motion" id="motions">
-                        </select>
-                    </div>
-
-                    <br>
-
-                    <div>
-                        <button onclick="Live2DViewer.bgLoader();" class="customButton">Background</button>
-                    </div>
-
-                    <br>
-
-                    <label for="x">X</label><br>
-                    <div>
-                        <input type="number" name="x" id="posx" min="0" value="0">
-                    </div>
-
-                    <br>
-
-                    <label for="y">Y</label><br>
-                    <div>
-                        <input type="number" name="y" id="posy" min="0" value="0">
-                    </div>
-
-                    <br>
-
-                    <div>
-                        <input type="checkbox" name="mloop" id="mloop" value="0">
-                        <label for="mloop">Loop</label>
-                        <input type="checkbox" name="subtitle" id="subtitle" checked>
-                        <label for="subtitle">Subtitle</label>
-                    </div>
-
-                    <br>
-
-                    <div>
-                        <label>Background Effect</label>
-                        <div id="bg-effect"></div>
-                    </div>
-                </div>
-
                 <div class="subtitleContainer">
                     <div class="subtitleTable">
                         <div class="subtitle"></div>
@@ -124,6 +69,60 @@
                 </div>
             </div>
         </div>
+
+        <aside id="l2dv3-setting">
+            <span id="settingButton" onclick="$('#l2dv3-setting').toggleClass('open');">&#9881;</span>
+
+            <label for="model">Live2D Model</label><br>
+            <div>
+                <select name="model" id="models">
+                </select>
+            </div>
+
+            <br>
+
+            <label for="motion">Motion</label><br>
+            <div>
+                <select name="motion" id="motions">
+                </select>
+            </div>
+
+            <br>
+
+            <div>
+                <button onclick="Live2DViewer.bgLoader();" class="customButton">Background</button>
+            </div>
+
+            <br>
+
+            <label for="x">X</label><br>
+            <div>
+                <input type="number" name="x" id="posx" min="0" value="0">
+            </div>
+
+            <br>
+
+            <label for="y">Y</label><br>
+            <div>
+                <input type="number" name="y" id="posy" min="0" value="0">
+            </div>
+
+            <br>
+
+            <div>
+                <input type="checkbox" name="mloop" id="mloop" value="0">
+                <label for="mloop">Loop</label>
+                <input type="checkbox" name="subtitle" id="subtitle" checked>
+                <label for="subtitle">Subtitle</label>
+            </div>
+
+            <br>
+
+            <div>
+                <label>Background Effect</label>
+                <div id="bg-effect"></div>
+            </div>
+        </aside>
 
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/promise-polyfill/8.3.0/polyfill.min.js"

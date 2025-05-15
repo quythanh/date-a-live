@@ -127,30 +127,7 @@ const Live2DViewer = {
     }, 500);
   },
 
-  openNav : () => {
-    $(".l2dv3-sidenav").first().css("right", "0px");
-    $(".l2dv3-sidenav").first().css("padding-left", "10px");
-    $("#settingButton").css("margin-right", "260px");
-  },
-
-  closeNav : () => {
-    $(".l2dv3-sidenav").first().css("right", "-250px");
-    $(".l2dv3-sidenav").first().css("padding-left", "0px");
-    $("#settingButton").css("margin-right", "0px");
-  },
-
   init: () => {
-    let isSettingOpened = false;
-
-    $("#settingButton").on("click", () => {
-      if (!isSettingOpened) {
-        Live2DViewer.openNav();
-      } else {
-        Live2DViewer.closeNav();
-      }
-      isSettingOpened = !isSettingOpened;
-    });
-
     const models = JSON.parse(httpGet('data/live2dv3_models.json'));
     for (const i in models) {
       const opt = document.createElement('option');
