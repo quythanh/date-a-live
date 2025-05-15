@@ -23,6 +23,7 @@ class Model extends PIXI.Container {
     }
 
     this._meshes = new Array(this._coreModel.drawables.ids.length);
+
     for (let m = 0; m < this._meshes.length; ++m) {
       // console.log(Object.prototype.toString.call(this._coreModel.drawables.vertexUvs[m]));
       //   --> [object Float32Array]
@@ -31,38 +32,44 @@ class Model extends PIXI.Container {
       for (let v = 1; v < uvs.length; v += 2) {
         uvs[v] = 1 - uvs[v];
       }
-      this._meshes[m] = new CubismMesh(
+
+      const mesh = new CubismMesh(
         textures[this._coreModel.drawables.textureIndices[m]],
         this._coreModel.drawables.vertexPositions[m],
         uvs,
         this._coreModel.drawables.indices[m],
-        PIXI.DRAW_MODES.TRIANGLES,
-      );
-      this._meshes[m].name = this._coreModel.drawables.ids[m];
-      this._meshes[m].scale.y *= -1;
-      this._meshes[m].isCulling = !Live2DCubismCore.Utils.hasIsDoubleSidedBit(
-        this._coreModel.drawables.constantFlags[m],
+        PIXI.DRAW_MODES.TRIANGLES
       );
 
-      if (Live2DCubismCore.Utils.hasBlendAdditiveBit(this._coreModel.drawables.constantFlags[m])) {
-        if (this._coreModel.drawables.maskCounts[m] > 0) {
+      mesh.name = this._coreModel.drawables.ids[m];
+      mesh.scale.y *= -1;
+      mesh.isCulling = !Live2DCubismCore.Utils.hasIsDoubleSidedBit(this._coreModel.drawables.constantFlags[m]);
+
+      const flags = this._coreModel.drawables.constantFlags[m];
+      const hasMask = this._coreModel.drawables.maskCounts[m] > 0;
+
+      if (Live2DCubismCore.Utils.hasBlendAdditiveBit(flags)) {
+        if (hasMask) {
           const addFilter = new PIXI.Filter();
           addFilter.blendMode = PIXI.BLEND_MODES.ADD;
-          this._meshes[m].filters = [addFilter];
+          mesh.filters = [addFilter];
         } else {
-          this._meshes[m].blendMode = PIXI.BLEND_MODES.ADD;
+          mesh.blendMode = PIXI.BLEND_MODES.ADD;
         }
-      } else if (Live2DCubismCore.Utils.hasBlendMultiplicativeBit(this._coreModel.drawables.constantFlags[m])) {
-        if (this._coreModel.drawables.maskCounts[m] > 0) {
+      } else if (Live2DCubismCore.Utils.hasBlendMultiplicativeBit(flags)) {
+        if (hasMask) {
           const multiplyFilter = new PIXI.Filter();
           multiplyFilter.blendMode = PIXI.BLEND_MODES.MULTIPLY;
-          this._meshes[m].filters = [multiplyFilter];
+          mesh.filters = [multiplyFilter];
         } else {
-          this._meshes[m].blendMode = PIXI.BLEND_MODES.MULTIPLY;
+          mesh.blendMode = PIXI.BLEND_MODES.MULTIPLY;
         }
       }
-      this.addChild(this._meshes[m]);
+
+      this._meshes[m] = mesh;
+      this.addChild(mesh);
     }
+
     this._maskSpriteContainer = new MaskSpriteContainer(coreModel, this);
   }
 
@@ -109,19 +116,24 @@ class Model extends PIXI.Container {
   update(delta) {
     const deltaTime = 0.016 * delta;
     this._animator.updateAndEvaluate(deltaTime);
+
     if (this._physicsRig) {
       this._physicsRig.updateAndEvaluate(deltaTime);
     }
+
     this._coreModel.update();
     let sort = false;
 
     for (let m = 0; m < this._meshes.length; ++m) {
-      this._meshes[m].alpha = this._coreModel.drawables.opacities[m];
-      this._meshes[m].visible = Live2DCubismCore.Utils.hasIsVisibleBit(this._coreModel.drawables.dynamicFlags[m]);
+      const mesh = this._meshes[m];
+      mesh.alpha = this._coreModel.drawables.opacities[m];
+      mesh.visible = Live2DCubismCore.Utils.hasIsVisibleBit(this._coreModel.drawables.dynamicFlags[m]);
+
       if (Live2DCubismCore.Utils.hasVertexPositionsDidChangeBit(this._coreModel.drawables.dynamicFlags[m])) {
-        this._meshes[m].vertices = this._coreModel.drawables.vertexPositions[m];
-        this._meshes[m].dirtyVertex = true;
+        mesh.vertices = this._coreModel.drawables.vertexPositions[m];
+        mesh.dirtyVertex = true;
       }
+
       if (Live2DCubismCore.Utils.hasRenderOrderDidChangeBit(this._coreModel.drawables.dynamicFlags[m])) {
         sort = true;
       }
@@ -144,36 +156,26 @@ class Model extends PIXI.Container {
     if (this._coreModel !== null) {
       this._coreModel.release();
     }
+
     super.destroy(options);
     this.masks.destroy();
-    this._meshes.forEach((m) => {
-      m.destroy();
-    });
+
+    this._meshes.forEach((m) => m.destroy());
+
     if (options === true || options.texture) {
-      this._textures.forEach((t) => {
-        t.destroy();
-      });
+      this._textures.forEach((t) => t.destroy());
     }
   }
 
   getModelMeshById(id) {
-    if (this._meshes == null) {
-      return null;
-    }
-    for (const mesh of this._meshes) {
-      if (mesh.name === id) {
-        return mesh;
-      }
-    }
-    return null;
+    if (this._meshes == null) return null;
+    return this._meshes.find(mesh => mesh.name === id) || null;
   }
 
   addParameterValueById(id, value) {
-    const p = this._coreModel.parameters.ids.indexOf(id);
-    if (p === -1) {
-      return;
-    }
-    this._coreModel.parameters.values[p] += value;
+    const index = this._coreModel.parameters.ids.indexOf(id);
+    if (index === -1) return;
+    this._coreModel.parameters.values[index] += value;
   }
 
   static _create(coreModel, textures, animator, physicsRig = null, userData = null, groups = null) {
