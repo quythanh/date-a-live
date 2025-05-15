@@ -17,21 +17,6 @@ var dailyDate = {
     }
   },
 
-  preloadImages : () => {
-    for (const i in data.spirit) {
-      new Image().src = data.spirit[i].data.img;
-      for (const k in data.spirit[i].date) {
-        for (const j in data.spirit[i].date[k].ending) {
-          for (const n in data.spirit[i].date[k].ending[j]) {
-            if (data.spirit[i].date[k].ending[j][n].cg) {
-              new Image().src = data.spirit[i].date[k].ending[j][n].cg;
-            }
-          }
-        }
-      }
-    }
-  },
-
   dismissLoading : () => {
     $('.loadingcontainer').addClass('out');
     setTimeout(() => {
@@ -45,8 +30,6 @@ var dailyDate = {
       dailyDate.dismissLoading();
     })
 
-    // preload images
-    dailyDate.preloadImages();
     for (const i in data.spirit) {
       const img = document.createElement('img');
       img.classList.add('thumb');
