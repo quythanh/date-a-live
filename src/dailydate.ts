@@ -62,21 +62,20 @@ const dailyDate = {
       selectedLocation = '';
       selectedRoute = '';
 
-      //banish cg
-      $("div").remove(".cg");
+      $("#cg").remove();
     });
 
     $('.popup').on("click", () => {
-      $('.poppedcg').addClass('out');
+      $('#poppedcg').addClass('out');
       setTimeout(() => {
         $('.popup').css('display', 'none');
-        $('.poppedcg').removeClass('out');
+        $('#poppedcg').removeClass('out');
       }, 400)
     })
   },
 
   loadGuide: (spirit: string, location: string, route: string, int: string) => {
-    $("div").remove(".cg");
+    $("#cg").remove();
 
     for (let i = 0; i < data.spirit[spirit].date[location].ending[route][int].guide.length; i++) {
       //console.log(i);
@@ -92,14 +91,14 @@ const dailyDate = {
 
     //cg
     if (data.spirit[spirit].date[location].ending[route][int].cg) {
-      const div = document.createElement('div');
-      div.classList.add('cg');
-      div.style.content = `url("${data.spirit[spirit].date[location].ending[route][int].cg}")`;
-      $('#edinfo').append(div);
-      $('.poppedcg').css('content', div.style.content);
-      $('.cg').on("click", () => {
+      const img = document.createElement('img');
+      img.id = 'cg';
+      img.src = data.spirit[spirit].date[location].ending[route][int].cg;
+      img.onclick = () => {
         $('.popup').css('display', 'table');
-      })
+      }
+      $('#edinfo').append(img);
+      $('#poppedcg').attr('src', img.src);
     }
   },
 
@@ -142,13 +141,9 @@ const dailyDate = {
       const el = e.target as HTMLLIElement;
       if (el.id == selectedLocation) return;
 
-      // banish name
       $("#name").text('');
-      // vanish cg
-      $("div").remove(".cg");
-      // banish route
+      $("#cg").remove();
       selectedRoute = '';
-      // banish guide
       $('#guidelist').text('');
 
       $(el).css('background', '#ca3e47');
