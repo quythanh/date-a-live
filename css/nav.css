@@ -19,7 +19,7 @@ ul.pagenav > li {
     }
 }
 
-.sidenav {
+nav#side_nav {
     position: fixed;
     left: -250px;
 
@@ -44,6 +44,29 @@ ul.pagenav > li {
 
         width: 5px;
         background-color: transparent;
+    }
+
+    > header {
+        border-bottom: 1px solid gray;
+
+        > div {
+            text-align: center;
+            margin: 1rem auto;
+            width: 180px;
+            padding: 0.5rem 1rem;
+            border: 1px solid white;
+            border-radius: 0.5rem;
+        }
+    }
+
+    > footer {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        text-align: center;
+        padding: 0.5rem 1rem;
+        border-top: 1px solid gray;
     }
 }
 
