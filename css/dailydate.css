@@ -1,7 +1,7 @@
 .wrapper {
     display: grid;
     grid-template-columns: 120px auto;
-    height: calc(100vh - 50px);
+    height: 100vh;
 }
 
 .left {

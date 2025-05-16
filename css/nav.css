@@ -9,29 +9,41 @@ ul.pagenav > li {
     padding: 10px;
     cursor: pointer;
 
+    &.selected {
+        background: #ca3e47;
+    }
+
     > a {
         color: #fff;
         text-decoration: none;
     }
 }
 
-#buttonNav {
-    cursor: pointer;
-    font-size: 20px;
-}
-
 .sidenav {
+    position: fixed;
+    left: -250px;
+
     color: #fff;
     background-color: #313131;
 
-    width: 0px;
+    width: 250px;
     height: 100vh;
-    overflow-x: hidden;
 
-    transition: width 0.5s ease;
+    transition: all 0.5s ease;
 
-    &.open {
-        width: 250px;
+    &:hover {
+        left: 0;
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        right: -5px;
+        top: 0;
+        bottom: 0;
+
+        width: 5px;
+        background-color: transparent;
     }
 }
 
