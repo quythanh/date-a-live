@@ -88,15 +88,18 @@ class Live2dV3 {
 		//external bgeffect
 		//bgEffect.backgroundManager(folderName, this);
 
-		this.canvas = el;
-
 		if (modelName) {
 			this.modelName = modelName;
 			this.l2d.load(folderName, modelName, this);
 		}
 
-		this.app = new PIXI.Application(width, height, { transparent: true });
-		this.canvas.appendChild(this.app.view);
+		this.app = new PIXI.Application({
+		  width,
+			height,
+			transparent: true,
+			powerPreference: "high-performance"
+		});
+		el.replaceWith(this.app.view);
 
 		this.app.ticker.add((deltaTime) => {
 			if (!this.model) {
