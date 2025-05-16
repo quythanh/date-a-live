@@ -1,21 +1,21 @@
-.nolist {
-    list-style-type:none;
-}
+ul.pagenav {
+    list-style-type: none;
 
-ul.pagenav > li {
-    margin-bottom: 5px;
-    margin-top: 5px;
-    padding-left: 20px;
-    padding: 10px;
-    cursor: pointer;
+    > li {
+        margin-bottom: 5px;
+        margin-top: 5px;
+        padding-left: 20px;
+        padding: 10px;
+        cursor: pointer;
 
-    &.selected {
-        background: #ca3e47;
-    }
+        &.selected {
+            background: #ca3e47;
+        }
 
-    > a {
-        color: #fff;
-        text-decoration: none;
+        > a {
+            color: #fff;
+            text-decoration: none;
+        }
     }
 }
 
