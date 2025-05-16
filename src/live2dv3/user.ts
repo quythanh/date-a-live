@@ -207,7 +207,7 @@ const Live2DViewer = {
 
   initModel: () => {
     Live2DViewer.model = new l2dViewer({
-      el: document.getElementById('L2dCanvas'),
+      el: $('#L2dCanvas'),
       basePath: 'assets/res/basic/modle/bust_kanban/',
       modelName,
       folderName,

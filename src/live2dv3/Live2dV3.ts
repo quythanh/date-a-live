@@ -47,18 +47,7 @@ class Live2dV3 {
 		}
 
 		if (!this.isDom(el)) {
-			if (el.length > 0) {
-				if (this.isDom(el[0])) {
-					el = el[0];
-				} else {
-					console.error(
-						"live2dv3 failed to load:\n",
-						el[0],
-						"is not a HTMLElement object",
-					);
-					return;
-				}
-			} else {
+		  if (el.length === 0) {
 				console.error(
 					"live2dv3 failed to load:\n",
 					el,
@@ -66,6 +55,15 @@ class Live2dV3 {
 				);
 				return;
 			}
+			if (!this.isDom(el[0])) {
+				console.error(
+					"live2dv3 failed to load:\n",
+					el[0],
+					"is not a HTMLElement object",
+				);
+				return;
+			}
+			el = el[0];
 		}
 
 		if (
