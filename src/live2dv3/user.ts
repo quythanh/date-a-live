@@ -160,32 +160,19 @@ const Live2DViewer = {
       folderName = $("#models option:selected").val();
       modelName = folderName.replace(folderName.split('_')[2], 'new');
 
+      let url = `assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`;
       $.ajax({
-        url: `assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`,
+        url,
         type: 'HEAD',
         error: () => {
-          //not _new
           modelName = modelName.replace("_new", "");
-          changeModel('assets/res/basic/modle/bust_kanban/', folderName, modelName, Live2DViewer.model, Live2DViewer.model.bg)
+          url = `assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`;
         },
-        success: () => {
-          //_new
+        complete: () => {
           changeModel('assets/res/basic/modle/bust_kanban/', folderName, modelName, Live2DViewer.model, Live2DViewer.model.bg)
+          Live2DViewer.loadMotion(url)
         }
       });
-
-      // motions;
-      $.ajax({
-        url: `assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`,
-        type: 'HEAD',
-        error: () => {
-          modelName = modelName.replace("_new", "");
-          Live2DViewer.loadMotion(`assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`)
-        },
-        success: () => {
-          Live2DViewer.loadMotion(`assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`)
-        }
-      })
     });
 
     // onchange motions
