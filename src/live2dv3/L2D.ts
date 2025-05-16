@@ -1,6 +1,6 @@
 class L2D {
   public basePath: string;
-  public loader: Loader;
+  // public loader: Loader;
   public animatorBuilder: AnimatorBuilder;
   public timeScale: number;
   public models: { [key: string]: Model };
@@ -8,7 +8,7 @@ class L2D {
 
   constructor(basePath) {
     this.basePath = basePath;
-    this.loader = new PIXI.Loader(this.basePath);
+    // this.loader = new PIXI.Loader(this.basePath);
     this.animatorBuilder = new LIVE2DCUBISMFRAMEWORK.AnimatorBuilder();
     this.timeScale = 1;
     this.models = {};
@@ -27,44 +27,36 @@ class L2D {
     if (!this.models[name]) {
       const modelDir = `${folder}/`;
       const modelPath = `${name}.model3.json`;
-      const modelNames: string[] = [];
-      const motionNames: string[] = [];
       const textures = [];
-      let textureCount = 0;
 
-      // if (!modelNames.includes(name+'_model')){
-      this.loader.add(`${name}_model`, modelDir + modelPath, {
-        xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON,
-      });
-      modelNames.push(`${name}_model`);
-      // }
+      (async () => {
+        const model3Obj = await PIXI.Assets.load(this.basePath + modelDir + modelPath);
 
-      this.loader.load((loader, resources) => {
-        const model3Obj = resources[`${name}_model`].data;
+        let groups = null;
+        if (typeof model3Obj.Groups !== "undefined") {
+          groups = LIVE2DCUBISMFRAMEWORK.Groups.fromModel3Json(model3Obj);
+        }
 
+        let moc = null;
         if (typeof model3Obj.FileReferences.Moc !== "undefined") {
-          loader.add(`${name}_moc`, modelDir + model3Obj.FileReferences.Moc, {
-            xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.BUFFER,
-          });
+          const _res = await fetch(this.basePath + modelDir + model3Obj.FileReferences.Moc);
+          const mocData = await _res.arrayBuffer();
+          moc = Live2DCubismCore.Moc.fromArrayBuffer(mocData);
         }
 
         if (typeof model3Obj.FileReferences.Textures !== "undefined") {
           for (const element of model3Obj.FileReferences.Textures) {
-            loader.add(`${name}_texture${textureCount}`, modelDir + element);
-            textureCount++;
+            const texture = await PIXI.Assets.load(this.basePath + modelDir + element)
+            textures.push(texture);
           }
         }
 
         if (typeof model3Obj.FileReferences.Physics !== "undefined") {
-          loader.add(
-            `${name}_physics`,
-            modelDir + model3Obj.FileReferences.Physics,
-            {
-              xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON,
-            },
-          );
+          const physicData = await PIXI.Assets.load(this.basePath + modelDir + model3Obj.FileReferences.Physics);
+          this.setPhysics3Json(physicData);
         }
 
+        const motions = new Map();
         if (typeof model3Obj.FileReferences.Motions !== "undefined") {
           for (const group in model3Obj.FileReferences.Motions) {
             for (const element of model3Obj.FileReferences.Motions[group]) {
@@ -72,84 +64,45 @@ class L2D {
                 .pop()
                 .split(".")
                 .shift();
-              if (!motionNames.includes(`${name}_${motionName}`)) {
-                loader.add(`${name}_${motionName}`, modelDir + element.File, {
-                  xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON,
-                });
-                motionNames.push(`${name}_${motionName}`);
-              } else {
-                const n = `${name}_${motionName}${String(Date.now())}`;
-                loader.add(n, modelDir + element.File, {
-                  xhrType: PIXI.LoaderResource.XHR_RESPONSE_TYPE.JSON,
-                });
-                motionNames.push(`${name}_${motionName}`);
-              }
+
+              const motion = await PIXI.Assets.load(this.basePath + modelDir + element.File);
+              const animation = LIVE2DCUBISMFRAMEWORK.Animation.fromMotion3Json(motion);
+              motions.set(motionName, animation);
             }
           }
         }
 
-        let groups = null;
-        if (typeof model3Obj.Groups !== "undefined") {
-          groups = LIVE2DCUBISMFRAMEWORK.Groups.fromModel3Json(model3Obj);
+        let model = null;
+        const coreModel = Live2DCubismCore.Model.fromMoc(moc);
+        if (coreModel == null) {
+          return;
         }
 
-        loader.load((l, r) => {
-          let moc = null;
-          if (typeof r[`${name}_moc`] !== "undefined") {
-            moc = Live2DCubismCore.Moc.fromArrayBuffer(r[`${name}_moc`].data);
-          }
+        const animator = this.animatorBuilder
+          .setTarget(coreModel)
+          .setTimeScale(this.timeScale)
+          .build();
 
-          if (typeof r[`${name}_texture${0}`] !== "undefined") {
-            for (let i = 0; i < textureCount; i++) {
-              textures.splice(i, 0, r[`${name}_texture${i}`].texture);
-            }
-          }
+        const physicsRig = this.physicsRigBuilder
+          .setTarget(coreModel)
+          .setTimeScale(this.timeScale)
+          .build();
 
-          if (typeof r[`${name}_physics`] !== "undefined") {
-            this.setPhysics3Json(r[`${name}_physics`].data);
-          }
+        const userData = null;
 
-          const motions = new Map();
-          for (const element of motionNames) {
-            const n = element.split(`${name}_`).pop();
-            motions.set(
-              n,
-              LIVE2DCUBISMFRAMEWORK.Animation.fromMotion3Json(r[element].data),
-            );
-          }
+        model = LIVE2DCUBISMPIXI.Model._create(
+          coreModel,
+          textures,
+          animator,
+          physicsRig,
+          userData,
+          groups,
+        );
+        model.motions = motions;
+        this.models[name] = model;
 
-          let model = null;
-          const coreModel = Live2DCubismCore.Model.fromMoc(moc);
-          if (coreModel == null) {
-            return;
-          }
-
-          const animator = this.animatorBuilder
-            .setTarget(coreModel)
-            .setTimeScale(this.timeScale)
-            .build();
-
-          const physicsRig = this.physicsRigBuilder
-            .setTarget(coreModel)
-            .setTimeScale(this.timeScale)
-            .build();
-
-          const userData = null;
-
-          model = LIVE2DCUBISMPIXI.Model._create(
-            coreModel,
-            textures,
-            animator,
-            physicsRig,
-            userData,
-            groups,
-          );
-          model.motions = motions;
-          this.models[name] = model;
-
-          v.changeCanvas(model, bg);
-        });
-      });
+        v.changeCanvas(model, bg);
+      })()
     } else {
       v.changeCanvas(this.models[name], bg);
     }

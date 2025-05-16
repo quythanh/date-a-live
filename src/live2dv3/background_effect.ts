@@ -50,7 +50,6 @@ const bgEffect = {
     bgEffect.isLoaded = false;
 
     if (charaEffect[model]) {
-      console.log(`bgeffect exists, ${model}`);
       const tempArr: string[] = [];
       for (const i in charaEffect[model]) {
         tempArr.push(`assets/res/basic/${charaEffect[model][i].path}.json:${charaEffect[model][i].action}`);
@@ -63,29 +62,27 @@ const bgEffect = {
 
   backgroundEffect: {
     add: (data: string[], l2dViewer) => {
-      for (let i = 0; i < data.length; i++) {
-        PIXI.Loader.shared.add(`bgEffect${i}`, data[i].split(':')[0]);
-      }
-
-      PIXI.Loader.shared.load((loader, res) => {
+      (async () => {
         for (let i = 0; i < data.length; i++) {
-          const s = new PIXI.spine.Spine(res[`bgEffect${i}`].spineData);
+          const [url, state] = data[i].split(':');
+          const _spine = await PIXI.Assets.load(url);
+          const s = new PIXI.spine.Spine(_spine.spineData);
 
           // to do idk how to automaticly set based resolution, so i'll set this for by screen reso / 2
           s.scale.x = s.scale.y = 1;
           s.x = window.innerWidth / 2;
           s.y = window.innerHeight / 2;
 
-          s.state.setAnimation(0, data[i].split(':')[1], true);
+          s.state.setAnimation(0, state, true);
           l2dViewer.app.stage.addChild(s);
-          bgEffect.list[`bgEffect${i}`] = {}
-          bgEffect.list[`bgEffect${i}`].x = s.x;
-          bgEffect.list[`bgEffect${i}`].y = s.y;
-          bgEffect.list[`bgEffect${i}`].scale = s.scale.x;
+          bgEffect.list[`bgEffect${i}`] = {
+            x: s.x,
+            y: s.y,
+            scale: s.scale.x
+          }
         }
         bgEffect.addSetting(l2dViewer);
-        PIXI.Loader.shared.reset();
-      });
+      })();
     }
   },
 
