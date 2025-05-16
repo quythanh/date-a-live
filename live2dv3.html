@@ -23,22 +23,15 @@
                 </div>
             </header>
 
-            <ul class="pagenav" style="padding-left:0px;margin-top: 10px;">
+            <ul class="pagenav">
                 <li>
-                    <a href="index.html">Main</a>
+                    <a href="index.html">Home</a>
+                <li>
+                    <a href="dailydate.html">Daily Date</a>
                 </li>
-                <li>Guides</li>
-                <ul class="pagenav">
-                    <li>
-                        <a href="dailydate.html">Daily Date</a>
-                    </li>
-                </ul>
-                <li>Tools</li>
-                <ul class="pagenav">
-                    <li class="selected">
-                        <a href="live2dv3.html">Live2D V3 Viewer</a>
-                    </li>
-                </ul>
+                <li class="selected">
+                    <a href="live2dv3.html">Live2D V3 Viewer</a>
+                </li>
             </ul>
 
             <footer>
@@ -47,34 +40,32 @@
             </footer>
         </nav>
 
-        <div class="container">
-            <main>
-                <div class="subtitleContainer">
-                    <div class="subtitleTable">
-                        <div class="subtitle"></div>
-                    </div>
+        <main>
+            <div class="subtitleContainer">
+                <div class="subtitleTable">
+                    <div class="subtitle"></div>
                 </div>
+            </div>
 
-                <div id="L2dCanvas"></div>
+            <div id="L2dCanvas"></div>
 
-                <div class="bgSelectorContainer">
-                    <div class="bgSelectorContainerTable">
-                        <div class="bgSelectorUI">
-                            <div class="title">
-                                Select Background
-                                <div class="bgSelectorCloseButton" onclick="Live2DViewer.closeBgContainer()">X</div>
-                            </div>
-                            <div class="bgCategoryContainer">
-                                <div class="bgCategory selected" onclick="Live2DViewer.switchBgType(0, false)">Normal</div>
-                                <div class="bgCategory" onclick="Live2DViewer.switchBgType(1)">Kanban</div>
-                            </div>
-                            <div class="selector" id="bgNormal"></div>
-                            <div class="selector" id="bgKanban"></div>
+            <div class="bgSelectorContainer">
+                <div class="bgSelectorContainerTable">
+                    <div class="bgSelectorUI">
+                        <div class="title">
+                            Select Background
+                            <div class="bgSelectorCloseButton" onclick="Live2DViewer.closeBgContainer()">X</div>
                         </div>
+                        <div class="bgCategoryContainer">
+                            <div class="bgCategory selected" onclick="Live2DViewer.switchBgType(0, false)">Normal</div>
+                            <div class="bgCategory" onclick="Live2DViewer.switchBgType(1)">Kanban</div>
+                        </div>
+                        <div class="selector" id="bgNormal"></div>
+                        <div class="selector" id="bgKanban"></div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
 
         <aside id="l2dv3-setting">
             <label for="model">Live2D Model</label><br>

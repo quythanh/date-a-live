@@ -22,22 +22,15 @@
                 </div>
             </header>
 
-            <ul class="pagenav" style="padding-left:0px;margin-top: 10px;">
+            <ul class="pagenav">
                 <li>
-                    <a href="index.html">Main</a>
+                    <a href="index.html">Home</a>
+                <li class="selected">
+                    <a href="dailydate.html">Daily Date</a>
                 </li>
-                <li>Guides</li>
-                <ul class="pagenav">
-                    <li class="selected">
-                        <a href="dailydate.html">Daily Date</a>
-                    </li>
-                </ul>
-                <li>Tools</li>
-                <ul class="pagenav">
-                    <li>
-                        <a href="live2dv3.html">Live2D V3 Viewer</a>
-                    </li>
-                </ul>
+                <li>
+                    <a href="live2dv3.html">Live2D V3 Viewer</a>
+                </li>
             </ul>
 
             <footer>
@@ -46,64 +39,62 @@
             </footer>
         </nav>
 
-        <div class="container">
-            <main>
-                <div class='wrapper'>
-                    <div class='left'></div>
-                    <div class='right'>
-                        <div class='truright'>
-                            <div class="gift">
-                                Favorites
-                                <ul style="list-style-type: none;padding-left: 0;">
-                                    <li style="margin-bottom: 20px;">
-                                        <img id="gift1"></img><span id="gift1d"></span>
-                                    </li>
+        <main>
+            <div class='wrapper'>
+                <div class='left'></div>
+                <div class='right'>
+                    <div class='truright'>
+                        <div class="gift">
+                            Favorites
+                            <ul style="list-style-type: none;padding-left: 0;">
+                                <li style="margin-bottom: 20px;">
+                                    <img id="gift1"></img><span id="gift1d"></span>
+                                </li>
 
-                                    <li>
-                                        <img id="gift2"></img><span id="gift2d"></span>
-                                    </li>
-                                </ul>
+                                <li>
+                                    <img id="gift2"></img><span id="gift2d"></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="selection">
+                            <div id="date1">
+                                Avaiable Location(s):
+                                <ul id="locationlist"></ul>
                             </div>
-                            <div class="selection">
-                                <div id="date1">
-                                    Avaiable Location(s):
-                                    <ul id="locationlist"></ul>
-                                </div>
-                                <div id="date2">
-                                    Available Route(s):
-                                    <ul id="routelist"><ul>
-                                </div>
+                            <div id="date2">
+                                Available Route(s):
+                                <ul id="routelist"><ul>
                             </div>
+                        </div>
 
-                            <div class="guide">
-                                <div id="edinfo">
-                                    <p id="name"></p>
-                                </div>
-                                Option(s):
-                                <ul id="guidelist"></ul>
+                        <div class="guide">
+                            <div id="edinfo">
+                                <p id="name"></p>
                             </div>
+                            Option(s):
+                            <ul id="guidelist"></ul>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="popup hidden">
-                    <div class="poptable">
-                        <img id="poppedcg"></img>
-                    </div>
+            <div class="popup hidden">
+                <div class="poptable">
+                    <img id="poppedcg"></img>
                 </div>
+            </div>
 
-                <div class="loadingcontainer">
-                    <div class="loadingcontainertable">
-                        <div class="lds-ripple">
-                            <div></div>
-                            <div></div>
-                        </div>
-                        <div style="color:white;">Loading Assets...</div>
-                        <div id="dismissLoading">Click here if stuck</div>
+            <div class="loadingcontainer">
+                <div class="loadingcontainertable">
+                    <div class="lds-ripple">
+                        <div></div>
+                        <div></div>
                     </div>
+                    <div style="color:white;">Loading Assets...</div>
+                    <div id="dismissLoading">Click here if stuck</div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
 
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
