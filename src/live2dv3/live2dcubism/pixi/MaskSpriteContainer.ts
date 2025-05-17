@@ -54,18 +54,14 @@ export default class MaskSpriteContainer extends Container {
           );
           maskMesh.name = pixiModel.meshes[meshMaskID].name;
           maskMesh.transform = pixiModel.meshes[meshMaskID].transform;
-          maskMesh.worldTransform = pixiModel.meshes[meshMaskID].worldTransform;
-          maskMesh.localTransform = pixiModel.meshes[meshMaskID].localTransform;
           maskMesh.isCulling = pixiModel.meshes[meshMaskID].isCulling;
           maskMesh.isMaskMesh = true;
           maskMesh.filters = [this._maskShader];
           newContainer.addChild(maskMesh);
         }
         newContainer.transform = pixiModel.transform;
-        newContainer.worldTransform = pixiModel.worldTransform;
-        newContainer.localTransform = pixiModel.localTransform;
         this._maskMeshContainers.push(newContainer);
-        const newTexture = RenderTexture.create(0, 0);
+        const newTexture = RenderTexture.create({ width: 100, height: 100 });
         this._maskTextures.push(newTexture);
         const newSprite = new Sprite(newTexture);
         this._maskSprites.push(newSprite);
