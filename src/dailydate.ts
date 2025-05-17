@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import { httpGet } from './utility';
+
 // stored data
 let selected: string = 'tohka';
 let selectedLocation: string = '';
