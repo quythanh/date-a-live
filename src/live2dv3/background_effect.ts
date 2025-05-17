@@ -39,6 +39,11 @@ path = "effect/dating/ui_superKanban_12504/junai_kanban",
 action = "texiao_qian",
 */
 
+type BackgroundEffectData = {
+  url: string;
+  state: string;
+}
+
 const charaEffect = JSON.parse(httpGet("assets/res/data/bgeffect.json"));
 
 const bgEffect = {
@@ -50,40 +55,41 @@ const bgEffect = {
     bgEffect.isLoaded = false;
 
     if (charaEffect[model]) {
-      const tempArr: string[] = [];
+      const tempArr: BackgroundEffectData[] = [];
       for (const i in charaEffect[model]) {
-        tempArr.push(`assets/res/basic/${charaEffect[model][i].path}.json:${charaEffect[model][i].action}`);
+        tempArr.push({
+          url: `assets/res/basic/${charaEffect[model][i].path}.json`,
+          state: charaEffect[model][i].action
+        });
       }
-      bgEffect.backgroundEffect.add(tempArr, l2dViewer);
+      bgEffect.addEffect(tempArr, l2dViewer);
     } else {
       bgEffect.isLoaded = true;
     }
   },
 
-  backgroundEffect: {
-    add: (data: string[], l2dViewer) => {
-      (async () => {
-        for (let i = 0; i < data.length; i++) {
-          const [url, state] = data[i].split(':');
-          const _spine = await PIXI.Assets.load(url);
-          const s = new PIXI.spine.Spine(_spine.spineData);
+  addEffect: (data: BackgroundEffectData[], l2dViewer) => {
+    (async () => {
+      for (let i = 0; i < data.length; i++) {
+        const { url, state } = data[i];
+        const _spine = await PIXI.Assets.load(url);
+        const s = new PIXI.spine.Spine(_spine.spineData);
 
-          // to do idk how to automaticly set based resolution, so i'll set this for by screen reso / 2
-          s.scale.x = s.scale.y = 1;
-          s.x = window.innerWidth / 2;
-          s.y = window.innerHeight / 2;
+        // to do idk how to automaticly set based resolution, so i'll set this for by screen reso / 2
+        s.scale.x = s.scale.y = 1;
+        s.x = window.innerWidth / 2;
+        s.y = window.innerHeight / 2;
 
-          s.state.setAnimation(0, state, true);
-          l2dViewer.app.stage.addChild(s);
-          bgEffect.list[`bgEffect${i}`] = {
-            x: s.x,
-            y: s.y,
-            scale: s.scale.x
-          }
+        s.state.setAnimation(0, state, true);
+        l2dViewer.app.stage.addChild(s);
+        bgEffect.list[`bgEffect${i}`] = {
+          x: s.x,
+          y: s.y,
+          scale: s.scale.x
         }
-        bgEffect.addSetting(l2dViewer);
-      })();
-    }
+      }
+      bgEffect.addSetting(l2dViewer);
+    })();
   },
 
   addSetting: (l2dViewer) => {
