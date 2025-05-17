@@ -25,26 +25,3 @@ const changeBackground = (bgPath, l2dViewer) => {
 const changePosition = (x, y, l2dViewer) => {
   l2dViewer.model.position = new PIXI.Point(x, y);
 };
-
-const l2dViewer = function (options) {
-  return new Live2dV3(options)
-}
-
-// (() => {
-//   const VERSION = '1.2.2';
-//   let _a;
-//   if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
-//     const args = [
-//       `\n\n       %c %c %c \u2730 Live2dV3 ${VERSION} \u2730  %c  \n%c  https://github.com/HCLonely/Live2dV3  %c\n\n`,
-//       'background: #ff66a5; padding:5px 0;',
-//       'background: #ff66a5; padding:5px 0;',
-//       'color: #ff66a5; background: #030307; padding:5px 0;',
-//       'background: #ff66a5; padding:5px 0;',
-//       'background: #ffc3dc; padding:5px 0;',
-//       'background: #ff66a5; padding:5px 0;',
-//     ];
-//     (_a = window.console).log.apply(_a, args);
-//   } else {
-//     console.log(`Live2dV3 ${VERSION} - https://github.com/HCLonely/Live2dV3`);
-//   }
-// })();
