@@ -1,3 +1,8 @@
+import $ from 'jquery';
+import { httpGet } from "../utility";
+import { Assets } from "pixi.js";
+import { Spine } from 'pixi-spine';
+import type Live2dV3 from './Live2dV3';
 //backup abyss diva, because it will throw an error if enable it
 /*
 pixi-spine.js:4717 Uncaught Error: Invalid timeline type for a bone: flipX (yu3)
@@ -50,7 +55,7 @@ const bgEffect = {
   list: {},
   isLoaded: false,
 
-  backgroundManager: (model: string, l2dViewer) => {
+  backgroundManager: (model: string, l2dViewer: Live2dV3) => {
     bgEffect.list = {};
     bgEffect.isLoaded = false;
 
@@ -68,12 +73,12 @@ const bgEffect = {
     }
   },
 
-  addEffect: (data: BackgroundEffectData[], l2dViewer) => {
+  addEffect: (data: BackgroundEffectData[], l2dViewer: Live2dV3) => {
     (async () => {
       for (let i = 0; i < data.length; i++) {
         const { url, state } = data[i];
-        const _spine = await PIXI.Assets.load(url);
-        const s = new PIXI.spine.Spine(_spine.spineData);
+        const _spine = await Assets.load(url);
+        const s = new Spine(_spine.spineData);
 
         // to do idk how to automaticly set based resolution, so i'll set this for by screen reso / 2
         s.scale.x = s.scale.y = 1;
@@ -92,7 +97,7 @@ const bgEffect = {
     })();
   },
 
-  addSetting: (l2dViewer) => {
+  addSetting: (l2dViewer: Live2dV3) => {
     $('#bg-effect').text('');
     let n = 0; // Spine index to do
     // spine finder
@@ -191,7 +196,7 @@ const bgEffect = {
     }
 
     bgEffect.isLoaded = true;
-    $('.l2dv3-collapsible-main').on("click", (e: Event) => {
+    $('.l2dv3-collapsible-main').on("click", (e: JQuery.TriggeredEvent) => {
       const el = e.target as HTMLButtonElement;
       const content = el.nextElementSibling as HTMLDivElement;
 
@@ -205,14 +210,18 @@ const bgEffect = {
     })
   },
 
-  changePosX: (index: number, value: number, l2dViewer) => {
+  changePosX: (index: number, value: number, l2dViewer: Live2dV3) => {
     l2dViewer.app.stage.children[index].x = value;
   },
-  changePosY: (index: number, value: number, l2dViewer) => {
+
+  changePosY: (index: number, value: number, l2dViewer: Live2dV3) => {
     l2dViewer.app.stage.children[index].y = value;
   },
-  changeScale: (index: number, value: number, l2dViewer) => {
+
+  changeScale: (index: number, value: number, l2dViewer: Live2dV3) => {
     l2dViewer.app.stage.children[index].scale.x = value / 100;
     l2dViewer.app.stage.children[index].scale.y = value / 100;
   },
 };
+
+export default bgEffect;

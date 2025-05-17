@@ -1,4 +1,18 @@
-class Animation {
+import AnimationPoint from "./AnimationPoint";
+import AnimationSegment from "./AnimationSegment";
+import AnimationTrack from "./AnimationTrack";
+import AnimationUserDataBody from "./AnimationUserDataBody";
+import BuiltinAnimationSegmentEvaluators from "../builtin/BuiltinAnimationSegmentEvaluators";
+import type { AnimationBlender } from "../type";
+
+export default class Animation {
+  public duration: number;
+  public loop: boolean;
+  public modelTracks: AnimationTrack[];
+  public parameterTracks: AnimationTrack[];
+  public partOpacityTracks: AnimationTrack[];
+  public userDataBodys: AnimationUserDataBody[];
+
   constructor(motion3Json) {
     this.modelTracks = [];
     this.parameterTracks = [];
@@ -19,8 +33,8 @@ class Animation {
 
     for (const c of motion3Json.Curves) {
       const s = c.Segments;
-      const points = [];
-      const segments = [];
+      const points: AnimationPoint[] = [];
+      const segments: AnimationSegment[] = [];
       points.push(new AnimationPoint(s[0], s[1]));
 
       for (let t = 2; t < s.length; t += 3) {
@@ -92,7 +106,7 @@ class Animation {
   }
 
   // Not sure type of blend
-  evaluate(time: number, weight: number, blend: BuiltinAnimationBlenders, target, stackFlags, groups = null) {
+  evaluate(time: number, weight: number, blend: AnimationBlender, target, stackFlags, groups = null) {
     if (weight <= 0.01) return;
 
     if (this.loop) {

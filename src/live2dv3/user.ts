@@ -1,4 +1,10 @@
-enum BackgroundType {
+import $ from 'jquery';
+import { Point } from "pixi.js";
+import L2D from "./L2D";
+import Live2dV3 from "./Live2dV3";
+import { httpGet } from '../utility';
+
+export enum BackgroundType {
   normal = 0,
   kanban = 1
 };
@@ -11,22 +17,20 @@ let folderName: string;
 let selectedBgType: BackgroundType = BackgroundType.normal;
 var currentBgIndex: number = 0; // reduce data consumption & optimization
 
-// bruh
-let favorPoint: number = 0;
-let favorLevel: number = 1;
-
 const Live2DViewer = {
   model: '',
 
-  checkInView: (elem, partial) => {
-    const container = $("#bgNormal");
-    const contHeight = container.height();
+  checkInView: (elQuerySelector: string, partial: boolean) => {
+    const container = $("#bgNormalContainer") as JQuery<HTMLDivElement>;
+    const contHeight = container.height() ?? 0;
 
-    const elemTop = $(elem).offset().top - container.offset().top;
-    const elemBottom = elemTop + $(elem).height();
+    const el = $(elQuerySelector) as JQuery<HTMLDivElement>;
+    const elHeight = el.height() ?? 0;
+    const elTop = el.offset()!.top - container.offset()!.top;
+    const elBottom = elTop + elHeight;
 
-    const isTotal = (elemTop >= 0 && elemBottom <= contHeight);
-    const isPart = ((elemTop < 0 && elemBottom > 0) || (elemTop > 0 && elemTop <= container.height())) && partial;
+    const isTotal = (elTop >= 0 && elBottom <= contHeight);
+    const isPart = ((elTop < 0 && elBottom > 0) || (elTop > 0 && elTop <= contHeight)) && partial;
 
     return isTotal || isPart;
   },
@@ -40,68 +44,63 @@ const Live2DViewer = {
     }, 100);
   },
 
-  switchBgType: (type: BackgroundType, isAdd = false) => {
+  switchBgType: (type: BackgroundType, isAdd: boolean = false) => {
     const bg = JSON.parse(httpGet('assets/res/data/bg.json'));
     //to do without reload, faster loading
     selectedBgType = type;
     $('.bgCategory').removeClass('selected');
     $('.bgCategory').eq(selectedBgType).addClass('selected');
 
-    if (selectedBgType == BackgroundType.normal) {
-      if ($('#bgNormal').html() != "") {
-        $('#bgNormal').css("display", "flex");
-        $('#bgKanban').css("display", "none");
-        return;
+    const __createBackgroundImg = (bgPath: string = "assets/res/basic/scene/bg/kanban/green.png") => {
+      const img = document.createElement('img');
+      img.classList.add('l2dv3-thumb');
+      img.src = bgPath;
+      img.onclick = () => {
+        changeBackground(bgPath, Live2DViewer.model);
+        Live2DViewer.closeBgContainer();
       }
-      if(!isAdd) return;
-      if (currentBgIndex >= Object.keys(bg.normal).length) return;
+      return img;
+    }
 
-      // load more
-      let n = currentBgIndex;
-      currentBgIndex += 20;
-      if (currentBgIndex >= Object.keys(bg.normal).length) {
-        currentBgIndex = Object.keys(bg.normal).length;
-      }
+    switch (selectedBgType) {
+      case BackgroundType.normal:
+        $('#bgNormalContainer').css("display", "flex");
+        $('#bgKanbanContainer').css("display", "none");
 
-      // better approach
-      const key = Object.keys(bg.normal);
-      for (; n < currentBgIndex; n++) {
-        const div = document.createElement('div');
-        div.classList.add('l2dv3-thumb');
-        div.style.content = `url("${key[n]}")`;
-        div.setAttribute("data-url", key[n]);
-        div.onclick = (e: Event) => {
-          changeBackground((e.target as HTMLDivElement).getAttribute('data-url'), Live2DViewer.model);
-          Live2DViewer.closeBgContainer();
+        if (!isAdd) return;
+
+        const keys = Object.keys(bg.normal);
+        if (currentBgIndex === keys.length) return;
+
+        // load more
+        let n = currentBgIndex;
+        currentBgIndex = Math.min(currentBgIndex + 15, keys.length);
+
+        // better approach
+        for (; n < currentBgIndex; n++) {
+          const img = __createBackgroundImg(keys[n]);
+
+          if (n === currentBgIndex - 1 && n !== keys.length - 1) {
+            img.id = "scspy";
+          }
+
+          $('#bgNormalContainer').append(img);
         }
-        if (n === currentBgIndex - 1 && n !== key.length - 1) {
-          div.id = "scspy";
-        }
+        break;
 
-        $('#bgNormal').append(div);
-      }
-
-      $('#bgNormal').css("display", "flex");
-      $('#bgKanban').css("display", "none");
-    } else if (selectedBgType == BackgroundType.kanban) {
-      if ($('#bgKanban').html() != "") {
-        $('#bgKanban').css("display", "flex");
-        $('#bgNormal').css("display", "none");
-        return;
-      }
-      for (const i in bg.kanban) {
-        const div = document.createElement('div');
-        div.classList.add('l2dv3-thumb');
-        div.style.content = `url("${i}")`;
-        div.setAttribute("data-url", i);
-        div.onclick = (e: Event) => {
-          changeBackground((e.target as HTMLDivElement).getAttribute('data-url'), Live2DViewer.model);
-          Live2DViewer.closeBgContainer();
+      case BackgroundType.kanban:
+        if ($('#bgKanbanContainer').html() != "") {
+          $('#bgKanbanContainer').css("display", "flex");
+          $('#bgNormalContainer').css("display", "none");
+          return;
         }
-        $('#bgKanban').append(div);
-      }
-      $('#bgKanban').css("display", "flex");
-      $('#bgNormal').css("display", "none");
+        for (const i in bg.kanban) {
+          const img = __createBackgroundImg(i);
+          $('#bgKanbanContainer').append(img);
+        }
+        $('#bgKanbanContainer').css("display", "flex");
+        $('#bgNormalContainer').css("display", "none");
+        break;
     }
   },
 
@@ -120,13 +119,6 @@ const Live2DViewer = {
     $("#motions").val("idle").trigger("change");
   },
 
-  bgLoader : () => {
-    $(".bgSelectorContainer").first().addClass("in");
-    setTimeout(() => {
-      $(".bgSelectorContainer").first().css("display", "table");
-    }, 500);
-  },
-
   init: () => {
     const models = JSON.parse(httpGet('assets/res/data/live2dv3_models.json'));
     for (const i in models) {
@@ -135,7 +127,7 @@ const Live2DViewer = {
       opt.innerHTML = models[i];
       $('#models').append(opt);
     }
-    folderName = $("#models option:selected").val();
+    folderName = $("#models option:selected").val() as string;
     modelName = folderName.replace(folderName.split('_')[2], 'new');
 
     // check _new first
@@ -148,7 +140,7 @@ const Live2DViewer = {
     $('#posx').val(window.innerWidth * 0.5);
     $('#posy').val(window.innerHeight * 0.5);
 
-    $("#bgNormal").on("scroll", () => {
+    $("#bgNormalContainer").on("scroll", () => {
       if (!$("#scspy").length) return;
       if (Live2DViewer.checkInView('#scspy', true)) {
         $('#scspy').removeAttr('id');
@@ -157,7 +149,7 @@ const Live2DViewer = {
     });
 
     $('#models').on("change", () => {
-      folderName = $("#models option:selected").val();
+      folderName = $("#models option:selected").val() as string;
       modelName = folderName.replace(folderName.split('_')[2], 'new');
 
       let url = `assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`;
@@ -206,7 +198,27 @@ const Live2DViewer = {
   }
 }
 
-window.onload = () => {
-  Live2DViewer.init();
-  Live2DViewer.initModel();
+function changeModel(
+  basePath: string,
+  folderName: string,
+  modelName: string,
+  l2dViewer,
+  bg: string = 'assets/res/basic/scene/bg/kanban/green.png',
+) {
+  l2dViewer.modelName = modelName;
+  l2dViewer.folderName = folderName;
+  l2dViewer.model = null;
+  const l2d = new L2D(basePath);
+  l2dViewer.bg = bg;
+  l2d.load(folderName, modelName, l2dViewer, bg);
 };
+
+function changeBackground(bgPath: string, l2dViewer) {
+  changeModel(l2dViewer.basePath, l2dViewer.folderName, l2dViewer.modelName, l2dViewer, bgPath);
+};
+
+function changePosition(x: number, y: number, l2dViewer) {
+  l2dViewer.model.position = new Point(x, y);
+};
+
+export default Live2DViewer;

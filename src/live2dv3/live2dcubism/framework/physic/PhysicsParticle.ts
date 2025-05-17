@@ -1,4 +1,17 @@
-class PhysicsParticle {
+import PhysicsVector2 from "./PhysicsVector2";
+
+export default class PhysicsParticle {
+  public initialPosition;
+  public mobility;
+  public delay;
+  public acceleration;
+  public radius;
+  public position;
+  public lastPosition;
+  public lastGravity: PhysicsVector2;
+  public force: PhysicsVector2;
+  public velocity: PhysicsVector2;
+
   constructor(initialPosition, mobility, delay, acceleration, radius) {
     this.initialPosition = initialPosition;
     this.mobility = mobility;

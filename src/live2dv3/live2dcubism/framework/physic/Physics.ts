@@ -1,4 +1,6 @@
-class Physics {
+import PhysicsVector2 from "./PhysicsVector2";
+
+export default class Physics {
   static gravity = new PhysicsVector2(0, -1);
   static wind = new PhysicsVector2(0, 0);
   static maximumWeight = 100;

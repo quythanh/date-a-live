@@ -1,11 +1,14 @@
-class PhysicsOutput {
+import Physics from "./Physics";
+import type PhysicsFactorTuple from "./PhysicsFactorTuple";
+
+export default class PhysicsOutput {
   public targetId;
   public particleIndex;
-  public weight;
-  public factor;
+  public weight: number;
+  public factor: PhysicsFactorTuple;
   public invert;
 
-  constructor(targetId, particleIndex, weight, angleScale, factor, invert) {
+  constructor(targetId, particleIndex, weight: number, angleScale: number, factor: PhysicsFactorTuple, invert) {
     this.targetId = targetId;
     this.particleIndex = particleIndex;
     this.weight = weight;

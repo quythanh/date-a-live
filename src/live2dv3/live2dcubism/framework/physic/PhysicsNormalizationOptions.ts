@@ -1,4 +1,4 @@
-class PhysicsNormalizationOptions {
+export default class PhysicsNormalizationOptions {
   public position;
   public angle;
 

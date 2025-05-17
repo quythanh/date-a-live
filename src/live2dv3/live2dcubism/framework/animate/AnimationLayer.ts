@@ -1,23 +1,28 @@
-class AnimationLayer {
-  public weight: number;
-  public blend: BuiltinAnimationBlenders;
-  public weightCrossfade: BuiltinCrossfadeWeighters;
+import type Animation from "./Animation";
+import type { AnimationBlender, CrossfadeWeighter } from "../type";
 
+export default class AnimationLayer {
+  public blend: AnimationBlender;
+  public weight: number;
+  public weightCrossfade: CrossfadeWeighter;
+
+  private _animation: Animation | null;
+  private _fadeDuration: number;
+  private _fadeTime: number;
+  private _goalAnimation: Animation | null;
+  private _goalTime: number;
   private _play: boolean;
   private _time: number;
-  private _goalTime: number;
-  private _fadeTime: number;
-  private _fadeDuration: number;
 
   public groups;
-  private _animation;
-  private _goalAnimation;
 
-  constructor(weight: number, blend: BuiltinAnimationBlenders, weightCrossfade: BuiltinCrossfadeWeighters) {
+  constructor(weight: number, blend: AnimationBlender, weightCrossfade: CrossfadeWeighter) {
     this.weight = weight;
     this.blend = blend;
     this.weightCrossfade = weightCrossfade;
 
+    this._animation = null;
+    this._goalAnimation = null;
     this._play = false;
     this._time = 0;
     this._goalTime = 0;
@@ -41,7 +46,7 @@ class AnimationLayer {
     return this._play;
   }
 
-  play(animation, fadeDuration = 0) {
+  play(animation: Animation, fadeDuration: number = 0) {
     if (this._animation && fadeDuration > 0) {
       this._goalAnimation = animation;
       this._goalTime = 0;
@@ -76,7 +81,8 @@ class AnimationLayer {
 
     // Loop setting
     if (this._animation) {
-      this._animation.loop = document.getElementById("mloop").checked;
+      const motionLoopInput = document.getElementById("mloop") as HTMLInputElement;
+      this._animation.loop = motionLoopInput.checked ?? false;
     }
 
     if (!this._animation || (!this._animation.loop && this._time > this._animation.duration)) {

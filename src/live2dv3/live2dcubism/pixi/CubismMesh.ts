@@ -1,4 +1,6 @@
-class CubismMesh extends PIXI.SimpleMesh {
+import { SimpleMesh } from "pixi.js";
+
+export default class CubismMesh extends SimpleMesh {
   public isCulling: boolean;
   public isMaskMesh: boolean;
 

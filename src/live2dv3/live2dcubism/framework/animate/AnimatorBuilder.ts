@@ -1,8 +1,14 @@
-class AnimatorBuilder {
+import type { AnimationBlender, CrossfadeWeighter } from "../type";
+import AnimationLayer from "./AnimationLayer";
+import Animator from "./Animator";
+import BuiltinAnimationBlenders from "../builtin/BuiltinAnimationBlenders";
+import BuiltinCrossfadeWeighters from "../builtin/BuiltinCrossfadeWeighters";
+
+export default class AnimatorBuilder {
   private _timeScale: number;
   private _layerNames: string[];
-  private _layerBlenders: BuiltinAnimationBlenders[];
-  private _layerCrossfadeWeighters: BuiltinCrossfadeWeighters[];
+  private _layerBlenders: AnimationBlender[];
+  private _layerCrossfadeWeighters: CrossfadeWeighter[];
   private _layerWeights: number[];
 
   constructor() {
@@ -18,12 +24,12 @@ class AnimatorBuilder {
     return this;
   }
 
-  setTimeScale(value) {
-    this._timeScale = value;
+  setTimeScale(timeScale: number) {
+    this._timeScale = timeScale;
     return this;
   }
 
-  addLayer(name: string, blender = BuiltinAnimationBlenders.OVERRIDE, weight = 1) {
+  addLayer(name: string, blender: AnimationBlender = BuiltinAnimationBlenders.OVERRIDE, weight = 1) {
     this._layerNames.push(name);
     this._layerBlenders.push(blender);
     this._layerCrossfadeWeighters.push(BuiltinCrossfadeWeighters.LINEAR);

@@ -1,10 +1,13 @@
-class PhysicsInput {
+import Physics from "./Physics";
+import PhysicsFactorTuple from "./PhysicsFactorTuple";
+
+export default class PhysicsInput {
   public targetId;
-  public weight;
+  public weight: number;
   public factor;
   public invert;
 
-  constructor(targetId, weight, factor, invert) {
+  constructor(targetId, weight: number, factor, invert) {
     this.targetId = targetId;
     this.weight = weight;
     this.factor = factor;
@@ -76,13 +79,13 @@ class PhysicsInput {
     );
   }
 
-  getRangeValue(min, max) {
+  getRangeValue(min: number, max: number) {
     const maxValue = Math.max(min, max);
     const minValue = Math.min(min, max);
     return Math.abs(maxValue - minValue);
   }
 
-  getMiddleValue(min, max) {
+  getMiddleValue(min: number, max: number) {
     const minValue = Math.min(min, max);
     return minValue + this.getRangeValue(min, max) / 2;
   }

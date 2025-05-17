@@ -1,4 +1,6 @@
-class Groups {
+import GroupBody from "./GroupBody";
+
+export default class Groups {
   private _groupBodys: GroupBody[] | null;
 
   constructor(model3Json) {

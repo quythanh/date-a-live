@@ -1,10 +1,13 @@
-class MaskSpriteContainer extends PIXI.Container {
+import { Container, DRAW_MODES, Filter, RenderTexture, Sprite } from "pixi.js";
+import CubismMesh from "./CubismMesh";
+
+export default class MaskSpriteContainer extends Container {
   private _maskShaderVertSrc: string;
   private _maskShaderFragSrc: string;
-  private _maskShader: PIXI.Filter;
-  private _maskMeshContainers;
-  private _maskTextures;
-  private _maskSprites;
+  private _maskShader: Filter;
+  private _maskMeshContainers: Container[];
+  private _maskTextures: RenderTexture[];
+  private _maskSprites: Sprite[];
 
   constructor(coreModel, pixiModel) {
     super();
@@ -29,7 +32,7 @@ class MaskSpriteContainer extends PIXI.Container {
         gl_FragColor = c;
       }
     `;
-    this._maskShader = new PIXI.Filter(this._maskShaderVertSrc.toString(), this._maskShaderFragSrc.toString());
+    this._maskShader = new Filter(this._maskShaderVertSrc.toString(), this._maskShaderFragSrc.toString());
 
     const _maskCounts = coreModel.drawables.maskCounts;
     const _maskRelationList = coreModel.drawables.masks;
@@ -39,7 +42,7 @@ class MaskSpriteContainer extends PIXI.Container {
 
     for (let m = 0; m < pixiModel.meshes.length; ++m) {
       if (_maskCounts[m] > 0) {
-        const newContainer = new PIXI.Container();
+        const newContainer = new Container();
         for (let n = 0; n < _maskRelationList[m].length; ++n) {
           const meshMaskID = coreModel.drawables.masks[m][n];
           const maskMesh = new CubismMesh(
@@ -47,7 +50,7 @@ class MaskSpriteContainer extends PIXI.Container {
             pixiModel.meshes[meshMaskID].vertices,
             pixiModel.meshes[meshMaskID].uvs,
             pixiModel.meshes[meshMaskID].indices,
-            PIXI.DRAW_MODES.TRIANGLES,
+            DRAW_MODES.TRIANGLES,
           );
           maskMesh.name = pixiModel.meshes[meshMaskID].name;
           maskMesh.transform = pixiModel.meshes[meshMaskID].transform;
@@ -62,9 +65,9 @@ class MaskSpriteContainer extends PIXI.Container {
         newContainer.worldTransform = pixiModel.worldTransform;
         newContainer.localTransform = pixiModel.localTransform;
         this._maskMeshContainers.push(newContainer);
-        const newTexture = PIXI.RenderTexture.create(0, 0);
+        const newTexture = RenderTexture.create(0, 0);
         this._maskTextures.push(newTexture);
-        const newSprite = new PIXI.Sprite(newTexture);
+        const newSprite = new Sprite(newTexture);
         this._maskSprites.push(newSprite);
         this.addChild(newSprite);
         pixiModel.meshes[m].mask = newSprite;

@@ -1,4 +1,4 @@
-class UserDataBody {
+export default class UserDataBody {
   public target;
 	public id;
 	public value;

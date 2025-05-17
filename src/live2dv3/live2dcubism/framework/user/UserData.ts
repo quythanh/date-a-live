@@ -1,4 +1,6 @@
-class UserData {
+import UserDataBody from "./UserDataBody";
+
+export default class UserData {
   private _target;
   private _version: number;
   private _userDataCount;

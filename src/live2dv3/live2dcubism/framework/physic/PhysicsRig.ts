@@ -1,4 +1,13 @@
-class PhysicsRig {
+import PhysicsFactorTuple from "./PhysicsFactorTuple";
+import PhysicsInput from "./PhysicsInput";
+import PhysicsNormalizationOptions from "./PhysicsNormalizationOptions";
+import PhysicsNormalizationTuple from "./PhysicsNormalizationTuple";
+import PhysicsOutput from "./PhysicsOutput";
+import PhysicsParticle from "./PhysicsParticle";
+import PhysicsSubRig from "./PhysicsSubRig";
+import PhysicsVector2 from "./PhysicsVector2";
+
+export default class PhysicsRig {
   public timeScale: number;
 
   private _target;

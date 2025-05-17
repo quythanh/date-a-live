@@ -1,4 +1,4 @@
-class PhysicsFactorTuple {
+export default class PhysicsFactorTuple {
   public x: number;
   public y: number;
   public angle: number;

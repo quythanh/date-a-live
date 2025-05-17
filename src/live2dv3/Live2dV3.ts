@@ -1,12 +1,22 @@
-class Live2dV3 {
+import $ from 'jquery';
+import { Application, Point, Sprite } from "pixi.js";
+import L2D from "./L2D";
+import { httpGet } from "../utility";
+import BuiltinAnimationBlenders from './live2dcubism/framework/builtin/BuiltinAnimationBlenders';
+import bgEffect from './background_effect';
+
+let favorPoint: number = 0;
+let favorLevel: number = 1;
+
+export default class Live2dV3 {
   public l2d: L2D;
-  public audio: Audio;
+  public audio;
   public basePath: string;
   public bg;
   public modelName: string;
   public folderName: string;
   public canvas: HTMLDivElement;
-  public app: PIXI.Application;
+  public app: Application;
   public model;
   public animator;
   public motions;
@@ -32,12 +42,6 @@ class Live2dV3 {
     if (typeof Live2DCubismCore === "undefined") {
       console.error(
         'live2dv3 failed to load:\nMissing live2dcubismcore.js\nPlease add "https://cdn.jsdelivr.net/gh/HCLonely/Live2dV3/js/live2dcubismcore.min.js" to the "<script>" tag.\nLook at https://github.com/HCLonely/Live2dV3',
-      );
-      return;
-    }
-    if (typeof PIXI === "undefined") {
-      console.error(
-        'live2dv3 failed to load:\nMissing pixi.js\nPlease add "https://cdn.jsdelivr.net/npm/pixi.js@4.6.1/dist/pixi.min.js" to the "<script>" tag.\nLook at https://github.com/HCLonely/Live2dV3',
       );
       return;
     }
@@ -93,7 +97,7 @@ class Live2dV3 {
       this.l2d.load(folderName, modelName, this);
     }
 
-    this.app = new PIXI.Application({
+    this.app = new Application({
       width,
       height,
       transparent: true,
@@ -119,8 +123,8 @@ class Live2dV3 {
       this.app.renderer.resize(width, height);
 
       if (this.model) {
-        this.model.position = new PIXI.Point(width * 0.5, height * 0.5);
-        this.model.scale = new PIXI.Point(
+        this.model.position = new Point(width * 0.5, height * 0.5);
+        this.model.scale = new Point(
           this.model.position.x * 1,
           this.model.position.x * 1,
         );
@@ -128,7 +132,7 @@ class Live2dV3 {
 
         //modification date a live
         if ($("#posx").length)
-        this.model.position = new PIXI.Point(
+        this.model.position = new Point(
           $("#posx").val(),
           $("#posy").val(),
         );
@@ -211,11 +215,11 @@ class Live2dV3 {
     this.model.update = this.onUpdate;
     this.model.animator.addLayer(
       "base",
-      LIVE2DCUBISMFRAMEWORK.BuiltinAnimationBlenders.OVERRIDE,
+      BuiltinAnimationBlenders.OVERRIDE,
       1,
     );
     //background
-    const foreground = PIXI.Sprite.from(bg);
+    const foreground = Sprite.from(bg);
     //calculator
     if (foreground.height !== 1) {
       let hRatio = foreground.height / window.innerHeight;

@@ -140,9 +140,7 @@
     display: grid;
 }
 
-.bgSelectorCloseButton {
-    position: relative;
-    text-align: right;
+#bgSelectorCloseButton {
     margin-right: 10px;
     cursor: pointer;
 }

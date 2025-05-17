@@ -1,4 +1,4 @@
-class GroupBody {
+export default class GroupBody {
   public target;
 	public name;
 	public ids;

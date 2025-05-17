@@ -1,4 +1,9 @@
-class Animator {
+import type { AnimationBlender } from "../type";
+import AnimationLayer from "./AnimationLayer";
+import BuiltinAnimationBlenders from "../builtin/BuiltinAnimationBlenders";
+import BuiltinCrossfadeWeighters from "../builtin/BuiltinCrossfadeWeighters";
+
+export default class Animator {
   public timeScale: number;
   public groups;
 
@@ -19,7 +24,7 @@ class Animator {
     return this._layers.values().some((l) => l.isPlaying);
   }
 
-  addLayer(name, blender = BuiltinAnimationBlenders.OVERRIDE, weight = 1) {
+  addLayer(name: string, blender: AnimationBlender = BuiltinAnimationBlenders.OVERRIDE, weight = 1) {
     const layer = new AnimationLayer(
       weight,
       blender,
@@ -29,11 +34,11 @@ class Animator {
     this._layers.set(name, layer);
   }
 
-  getLayer(name) {
+  getLayer(name: string) {
     return this._layers.has(name) ? this._layers.get(name) : null;
   }
 
-  removeLayer(name) {
+  removeLayer(name: string) {
     return this._layers.has(name) ? this._layers.delete(name) : null;
   }
 

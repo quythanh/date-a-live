@@ -1,4 +1,8 @@
-class Model extends PIXI.Container {
+import { BLEND_MODES, Container, DRAW_MODES, Filter } from "pixi.js";
+import CubismMesh from "./CubismMesh";
+import MaskSpriteContainer from "./MaskSpriteContainer";
+
+export default class Model extends Container {
   private _coreModel;
   private _textures;
   private _animator;
@@ -38,7 +42,7 @@ class Model extends PIXI.Container {
         this._coreModel.drawables.vertexPositions[m],
         uvs,
         this._coreModel.drawables.indices[m],
-        PIXI.DRAW_MODES.TRIANGLES
+        DRAW_MODES.TRIANGLES
       );
 
       mesh.name = this._coreModel.drawables.ids[m];
@@ -50,19 +54,19 @@ class Model extends PIXI.Container {
 
       if (Live2DCubismCore.Utils.hasBlendAdditiveBit(flags)) {
         if (hasMask) {
-          const addFilter = new PIXI.Filter();
-          addFilter.blendMode = PIXI.BLEND_MODES.ADD;
+          const addFilter = new Filter();
+          addFilter.blendMode = BLEND_MODES.ADD;
           mesh.filters = [addFilter];
         } else {
-          mesh.blendMode = PIXI.BLEND_MODES.ADD;
+          mesh.blendMode = BLEND_MODES.ADD;
         }
       } else if (Live2DCubismCore.Utils.hasBlendMultiplicativeBit(flags)) {
         if (hasMask) {
-          const multiplyFilter = new PIXI.Filter();
-          multiplyFilter.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+          const multiplyFilter = new Filter();
+          multiplyFilter.blendMode = BLEND_MODES.MULTIPLY;
           mesh.filters = [multiplyFilter];
         } else {
-          mesh.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+          mesh.blendMode = BLEND_MODES.MULTIPLY;
         }
       }
 

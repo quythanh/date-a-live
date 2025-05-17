@@ -1,40 +1,44 @@
-class L2D {
+import { Assets } from "pixi.js";
+
+import Animation from "./live2dcubism/framework/animate/Animation";
+import AnimatorBuilder from "./live2dcubism/framework/animate/AnimatorBuilder";
+import Groups from "./live2dcubism/framework/group/Groups";
+import PhysicsRigBuilder from "./live2dcubism/framework/physic/PhysicsRigBuilder";
+import Model from "./live2dcubism/pixi/Model";
+
+export default class L2D {
   public basePath: string;
-  // public loader: Loader;
   public animatorBuilder: AnimatorBuilder;
   public timeScale: number;
   public models: { [key: string]: Model };
   public physicsRigBuilder: PhysicsRigBuilder;
 
-  constructor(basePath) {
+  constructor(basePath: string) {
     this.basePath = basePath;
-    // this.loader = new PIXI.Loader(this.basePath);
-    this.animatorBuilder = new LIVE2DCUBISMFRAMEWORK.AnimatorBuilder();
+    this.animatorBuilder = new AnimatorBuilder();
     this.timeScale = 1;
     this.models = {};
   }
 
   setPhysics3Json(value) {
     if (!this.physicsRigBuilder) {
-      this.physicsRigBuilder = new LIVE2DCUBISMFRAMEWORK.PhysicsRigBuilder();
+      this.physicsRigBuilder = new PhysicsRigBuilder();
     }
     this.physicsRigBuilder.setPhysics3Json(value);
-
-    return this;
   }
 
-  load(folder: string, name: string, v, bg = "assets/res/basic/scene/bg/kanban/green.png") {
+  load(folder: string, name: string, v, bg: string = "assets/res/basic/scene/bg/kanban/green.png") {
     if (!this.models[name]) {
       const modelDir = `${folder}/`;
       const modelPath = `${name}.model3.json`;
       const textures = [];
 
       (async () => {
-        const model3Obj = await PIXI.Assets.load(this.basePath + modelDir + modelPath);
+        const model3Obj = await Assets.load(this.basePath + modelDir + modelPath);
 
         let groups = null;
         if (typeof model3Obj.Groups !== "undefined") {
-          groups = LIVE2DCUBISMFRAMEWORK.Groups.fromModel3Json(model3Obj);
+          groups = Groups.fromModel3Json(model3Obj);
         }
 
         let moc = null;
@@ -46,13 +50,13 @@ class L2D {
 
         if (typeof model3Obj.FileReferences.Textures !== "undefined") {
           for (const element of model3Obj.FileReferences.Textures) {
-            const texture = await PIXI.Assets.load(this.basePath + modelDir + element)
+            const texture = await Assets.load(this.basePath + modelDir + element)
             textures.push(texture);
           }
         }
 
         if (typeof model3Obj.FileReferences.Physics !== "undefined") {
-          const physicData = await PIXI.Assets.load(this.basePath + modelDir + model3Obj.FileReferences.Physics);
+          const physicData = await Assets.load(this.basePath + modelDir + model3Obj.FileReferences.Physics);
           this.setPhysics3Json(physicData);
         }
 
@@ -65,8 +69,8 @@ class L2D {
                 .split(".")
                 .shift();
 
-              const motion = await PIXI.Assets.load(this.basePath + modelDir + element.File);
-              const animation = LIVE2DCUBISMFRAMEWORK.Animation.fromMotion3Json(motion);
+              const motion = await Assets.load(this.basePath + modelDir + element.File);
+              const animation = Animation.fromMotion3Json(motion);
               motions.set(motionName, animation);
             }
           }
@@ -90,7 +94,7 @@ class L2D {
 
         const userData = null;
 
-        model = LIVE2DCUBISMPIXI.Model._create(
+        model = Model._create(
           coreModel,
           textures,
           animator,
