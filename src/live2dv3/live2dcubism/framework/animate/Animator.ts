@@ -10,10 +10,10 @@ export default class Animator {
   private _target;
   private _layers: Map<string, AnimationLayer>;
 
-  constructor(target, timeScale: number, layers: Map<string, AnimationLayer>) {
+  constructor(target, timeScale: number, layers?: Map<string, AnimationLayer>) {
     this._target = target;
     this.timeScale = timeScale;
-    this._layers = layers;
+    this._layers = layers ?? new Map();
   }
 
   get target() {
@@ -63,14 +63,5 @@ export default class Animator {
     for (const l of this._layers.values()) {
       l._evaluate(this._target, stackFlags);
     }
-  }
-
-  get isValid() {
-    return this._target != null;
-  }
-
-  static _create(target, timeScale: number, layers: Map<string, AnimationLayer>) {
-    const animator = new Animator(target, timeScale, layers);
-    return animator.isValid ? animator : null;
   }
 }

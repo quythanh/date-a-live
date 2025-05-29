@@ -181,17 +181,4 @@ export default class Model extends Container {
     if (index === -1) return;
     this._coreModel.parameters.values[index] += value;
   }
-
-  static _create(coreModel, textures, animator, physicsRig = null, userData = null, groups = null) {
-    const model = new Model(coreModel, textures, animator, physicsRig, userData, groups);
-    if (!model.isValid) {
-      model.destroy();
-      return null;
-    }
-    return model;
-  }
-
-  get isValid() {
-    return this._coreModel != null;
-  }
 }
