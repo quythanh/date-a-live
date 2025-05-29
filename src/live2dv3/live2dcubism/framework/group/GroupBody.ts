@@ -1,9 +1,9 @@
 export default class GroupBody {
-  public target;
-	public name;
-	public ids;
+  public target: string;
+	public name: string;
+	public ids: string[];
 
-	constructor(target, name, ids) {
+	constructor(target: string, name: string, ids: string[]) {
 		this.target = target;
 		this.name = name;
 		this.ids = ids;

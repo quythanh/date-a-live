@@ -9,6 +9,16 @@ export enum BackgroundType {
   kanban = 1
 };
 
+type TLive2DViewer = {
+  model: Live2dV3 | null;
+  checkInView: (elQuerySelector: string, partial: boolean) => boolean;
+  closeBgContainer: () => void;
+  switchBgType: (type: BackgroundType, isAdd?: boolean) => void;
+  loadMotion: (model: string) => void;
+  init: () => void;
+  initModel: () => void;
+}
+
 // opt
 let modelName: string;
 let folderName: string;
@@ -17,8 +27,8 @@ let folderName: string;
 let selectedBgType: BackgroundType = BackgroundType.normal;
 var currentBgIndex: number = 0; // reduce data consumption & optimization
 
-const Live2DViewer = {
-  model: '',
+const Live2DViewer: TLive2DViewer = {
+  model: null,
 
   checkInView: (elQuerySelector: string, partial: boolean) => {
     const container = $("#bgNormalContainer") as JQuery<HTMLDivElement>;
@@ -169,19 +179,28 @@ const Live2DViewer = {
 
     // onchange motions
     $('#motions').on("change", () => {
-      const motionName = $("#motions option:selected").val();
+      if (Live2DViewer.model == null) {
+        throw new Error("`model` hasn't been initialized.");
+      }
+
+      const motionName = $("#motions option:selected").val() as string;
       Live2DViewer.model.startAnimation(motionName, 'base');
     });
 
-    $('#posx').on("change", (e) => {
-      if (e.target.value == '') e.target.value = 0;
-      changePosition(e.target.value, $('#posy').val(), Live2DViewer.model);
-    });
+    const _onPosChange = (e: JQuery.ChangeEvent) => {
+      if (Live2DViewer.model == null) {
+        throw new Error("`model` hasn't been initialized.");
+      }
 
-    $('#posy').on("change", (e) => {
-      if (e.target.value == '') e.target.value = 0;
-      changePosition($('#posx').val(), e.target.value, Live2DViewer.model);
-    });
+      const el = $(e.target);
+      if (el.val() == '') el.val(0);
+      const x = Number.parseInt($('$posx').val() as string);
+      const y = Number.parseInt($('#posy').val() as string);
+      changePosition(x, y, Live2DViewer.model);
+    };
+
+    $('#posx').on("change", _onPosChange);
+    $('#posy').on("change", _onPosChange);
   },
 
   initModel: () => {
@@ -193,7 +212,7 @@ const Live2DViewer = {
       sizeLimit: false,
       width: window.innerWidth,
       height: window.innerHeight,
-      mobileLimit: false
+      mobileLimit: true
     });
   }
 }
@@ -202,7 +221,7 @@ function changeModel(
   basePath: string,
   folderName: string,
   modelName: string,
-  l2dViewer,
+  l2dViewer: Live2dV3,
   bg: string = 'assets/res/basic/scene/bg/kanban/green.png',
 ) {
   l2dViewer.modelName = modelName;
@@ -213,11 +232,11 @@ function changeModel(
   l2d.load(folderName, modelName, l2dViewer, bg);
 };
 
-function changeBackground(bgPath: string, l2dViewer) {
+function changeBackground(bgPath: string, l2dViewer: Live2dV3) {
   changeModel(l2dViewer.basePath, l2dViewer.folderName, l2dViewer.modelName, l2dViewer, bgPath);
 };
 
-function changePosition(x: number, y: number, l2dViewer) {
+function changePosition(x: number, y: number, l2dViewer: Live2dV3) {
   l2dViewer.model.position = new Point(x, y);
 };
 

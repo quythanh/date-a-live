@@ -1,16 +1,18 @@
+import type { Model } from "@hazart-pkg/live2d-core";
 import type { AnimationBlender } from "../type";
 import AnimationLayer from "./AnimationLayer";
 import BuiltinAnimationBlenders from "../builtin/BuiltinAnimationBlenders";
 import BuiltinCrossfadeWeighters from "../builtin/BuiltinCrossfadeWeighters";
+import type Groups from "../group/Groups";
 
 export default class Animator {
   public timeScale: number;
-  public groups;
+  public groups?: Groups;
 
-  private _target;
+  private _target: Model;
   private _layers: Map<string, AnimationLayer>;
 
-  constructor(target, timeScale: number, layers?: Map<string, AnimationLayer>) {
+  constructor(target: Model, timeScale: number, layers?: Map<string, AnimationLayer>) {
     this._target = target;
     this.timeScale = timeScale;
     this._layers = layers ?? new Map();
@@ -21,7 +23,7 @@ export default class Animator {
   }
 
   get isPlaying() {
-    return this._layers.values().some((l) => l.isPlaying);
+    return Array.from(this._layers.values()).some((l) => l.isPlaying);
   }
 
   addLayer(name: string, blender: AnimationBlender = BuiltinAnimationBlenders.OVERRIDE, weight = 1) {

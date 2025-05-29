@@ -1,3 +1,5 @@
+import type { Model } from "@hazart-pkg/live2d-core";
+import type { PhysicObject } from "../../../../types";
 import PhysicsFactorTuple from "./PhysicsFactorTuple";
 import PhysicsInput from "./PhysicsInput";
 import PhysicsNormalizationOptions from "./PhysicsNormalizationOptions";
@@ -10,17 +12,12 @@ import PhysicsVector2 from "./PhysicsVector2";
 export default class PhysicsRig {
   public timeScale: number;
 
-  private _target;
+  private _target: Model;
   private _subRigs: PhysicsSubRig[];
 
-  constructor(target, timeScale: number, physics3Json) {
+  constructor(target: Model, timeScale: number, physics3Json: PhysicObject) {
     this.timeScale = timeScale || 1;
     this._target = target;
-
-    if (!target) {
-      return;
-    }
-
     this._subRigs = [];
 
     for (const r of physics3Json.PhysicsSettings) {
@@ -100,14 +97,5 @@ export default class PhysicsRig {
     for (const r of this._subRigs) {
       r._evaluate(this._target);
     }
-  }
-
-  static _fromPhysics3Json(target, timeScale: number, physics3Json) {
-    const rig = new PhysicsRig(target, timeScale, physics3Json);
-    return rig._isValid ? rig : null;
-  }
-
-  get _isValid() {
-    return this._target != null;
   }
 }

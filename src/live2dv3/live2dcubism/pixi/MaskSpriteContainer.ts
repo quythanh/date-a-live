@@ -1,5 +1,7 @@
-import { Container, DRAW_MODES, Filter, RenderTexture, Sprite } from "pixi.js";
+import { Container, DRAW_MODES, Filter, RenderTexture, Sprite, type IDestroyOptions } from "pixi.js";
+import type { Model as CoreModel } from "@hazart-pkg/live2d-core";
 import CubismMesh from "./CubismMesh";
+import type Model from "./Model";
 
 export default class MaskSpriteContainer extends Container {
   private _maskShaderVertSrc: string;
@@ -9,7 +11,7 @@ export default class MaskSpriteContainer extends Container {
   private _maskTextures: RenderTexture[];
   private _maskSprites: Sprite[];
 
-  constructor(coreModel, pixiModel) {
+  constructor(coreModel: CoreModel, pixiModel: Model) {
     super();
     this._maskShaderVertSrc = `
       attribute vec2 aVertexPosition;
@@ -79,11 +81,11 @@ export default class MaskSpriteContainer extends Container {
     return this._maskMeshContainers;
   }
 
-  destroy(options) {
+  destroy(options?: IDestroyOptions | boolean) {
     this._maskSprites.forEach((m) => m.destroy());
     this._maskTextures.forEach((m) => m.destroy());
     this._maskMeshContainers.forEach((m) => m.destroy());
-    this._maskShader = null;
+    this._maskShader.destroy();
   }
 
   update(appRenderer) {
@@ -92,7 +94,7 @@ export default class MaskSpriteContainer extends Container {
     }
   }
 
-  resize(viewWidth, viewHeight) {
+  resize(viewWidth: number, viewHeight: number) {
     for (let m = 0; m < this._maskTextures.length; ++m) {
       this._maskTextures[m].resize(viewWidth, viewHeight, false);
     }

@@ -1,18 +1,34 @@
-import { BLEND_MODES, Container, DRAW_MODES, Filter } from "pixi.js";
+import { BLEND_MODES, Container, DRAW_MODES, Filter, Texture, type IDestroyOptions } from "pixi.js";
+import type { Model as CoreModel } from "@hazart-pkg/live2d-core";
+
+import type Animation from "../framework/animate/Animation";
+import type Animator from "../framework/animate/Animator";
 import CubismMesh from "./CubismMesh";
 import MaskSpriteContainer from "./MaskSpriteContainer";
+import type PhysicsRig from "../framework/physic/PhysicsRig";
+import type Groups from "../framework/group/Groups";
+import type UserData from "../framework/user/UserData";
 
 export default class Model extends Container {
-  private _coreModel;
-  private _textures;
-  private _animator;
-  private _physicsRig;
-  private _userData;
-  private _groups;
+  public motions?: Map<string, Animation>;
+
+  private _coreModel: CoreModel;
+  private _textures: Texture[];
+  private _animator: Animator;
+  private _physicsRig: PhysicsRig;
+  private _userData: UserData | null;
+  private _groups: Groups;
   private _meshes: CubismMesh[];
   private _maskSpriteContainer: MaskSpriteContainer;
 
-  constructor(coreModel, textures, animator, physicsRig = null, userData = null, groups = null) {
+  constructor(
+    coreModel: CoreModel,
+    textures: Texture[],
+    animator: Animator,
+    physicsRig: PhysicsRig,
+    userData: UserData | null,
+    groups: Groups
+  ) {
     super();
     this._coreModel = coreModel;
     this._textures = textures;
@@ -21,6 +37,7 @@ export default class Model extends Container {
     this._userData = userData;
     this._groups = groups;
     this._animator.groups = this._groups;
+    this._meshes = [];
 
     if (this._coreModel == null) {
       return;
@@ -117,7 +134,7 @@ export default class Model extends Container {
     return this._groups;
   }
 
-  update(delta) {
+  update(delta: number) {
     const deltaTime = 0.016 * delta;
     this._animator.updateAndEvaluate(deltaTime);
 
@@ -156,7 +173,7 @@ export default class Model extends Container {
     this._coreModel.drawables.resetDynamicFlags();
   }
 
-  destroy(options) {
+  destroy(options?: IDestroyOptions | boolean) {
     if (this._coreModel !== null) {
       this._coreModel.release();
     }
@@ -166,17 +183,17 @@ export default class Model extends Container {
 
     this._meshes.forEach((m) => m.destroy());
 
-    if (options === true || options.texture) {
+    if (options === true) {
       this._textures.forEach((t) => t.destroy());
     }
   }
 
-  getModelMeshById(id) {
+  getModelMeshById(id: string) {
     if (this._meshes == null) return null;
     return this._meshes.find(mesh => mesh.name === id) || null;
   }
 
-  addParameterValueById(id, value) {
+  addParameterValueById(id: string, value: number) {
     const index = this._coreModel.parameters.ids.indexOf(id);
     if (index === -1) return;
     this._coreModel.parameters.values[index] += value;

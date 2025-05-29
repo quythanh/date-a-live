@@ -1,8 +1,10 @@
 import type Animation from "./Animation";
 import type { AnimationBlender, CrossfadeWeighter } from "../type";
+import type Groups from "../group/Groups";
 
 export default class AnimationLayer {
   public blend: AnimationBlender;
+  public groups: Groups;
   public weight: number;
   public weightCrossfade: CrossfadeWeighter;
 
@@ -14,12 +16,12 @@ export default class AnimationLayer {
   private _play: boolean;
   private _time: number;
 
-  public groups;
 
   constructor(weight: number, blend: AnimationBlender, weightCrossfade: CrossfadeWeighter) {
     this.weight = weight;
     this.blend = blend;
     this.weightCrossfade = weightCrossfade;
+    this.groups = null;
 
     this._animation = null;
     this._goalAnimation = null;
