@@ -314,11 +314,18 @@ export default class Live2dV3 {
           }, false);
 
           if (!$("#show-subtitle").is(':checked')) break;
-          const subtitleJSON = JSON.parse(httpGet("assets/res/data/subtitle.json"));
-          if (subtitleJSON[this.folderName]) {
-            if (subtitleJSON[this.folderName][motionId]) {
+
+          const lang = "en";
+          let subJson: string = '';
+          try {
+            subJson = httpGet(`assets/res/data/subtitle/${this.folderName}/${lang}.json`);
+          } catch (e) {
+            subJson = httpGet(`assets/res/data/subtitle/${this.folderName}/en.json`);
+          } finally {
+            const subtitle = JSON.parse(subJson);
+            if (subtitle[motionId]) {
               const subtitleElement = $(".subtitle").first();
-              subtitleElement.text(subtitleJSON[this.folderName][motionId]);
+              subtitleElement.text(subtitle[motionId]);
               subtitleElement.addClass("in");
 
               setTimeout(() => {

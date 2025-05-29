@@ -2,7 +2,8 @@ export function httpGet(theUrl: string): string {
     const xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET", theUrl, false); // false for synchronous request
     xmlHttp.send(null);
-    return xmlHttp.responseText;
+    if (xmlHttp.status === 200) return xmlHttp.responseText;
+    throw new Error("Resource does not exist.")
 }
 
 export function isDom(e: any) {
