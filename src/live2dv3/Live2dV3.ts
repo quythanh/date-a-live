@@ -296,16 +296,16 @@ export default class Live2dV3 {
     }
 
     if (this.audio) this.audio.pause();
-    const mmotions = JSON.parse(
+    const motions = JSON.parse(
       httpGet(
         `${this.basePath}/${this.folderName}/${this.modelName}.model3.json`,
       ),
     );
 
-    for (const i in mmotions.FileReferences.Motions) {
+    for (const i in motions.FileReferences.Motions) {
       if (i.toLowerCase() === motionId) {
-        if (mmotions.FileReferences.Motions[i][0].Sound) {
-          const audioPath = `assets/res/basic/${mmotions.FileReferences.Motions[i][0].Sound}`;
+        if (motions.FileReferences.Motions[i][0].Sound) {
+          const audioPath = `assets/res/basic/${motions.FileReferences.Motions[i][0].Sound}`;
           this.audio = new Audio(audioPath);
           this.audio.play();
 
