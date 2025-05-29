@@ -18,6 +18,9 @@ importers:
         specifier: 7.4.2
         version: 7.4.2
     devDependencies:
+      '@hazart-pkg/live2d-core':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@types/jquery':
         specifier: ^3.5.32
         version: 3.5.32
@@ -182,6 +185,9 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@hazart-pkg/live2d-core@1.0.1':
+    resolution: {integrity: sha512-yYi4Up5fH41QFTI+CUbYD2+EIKzKO0LHlxQ3+kHsy8bghsEOAaYm64Lg12tUjhJVYPjWMSDWzdv0WsXZXT6pNQ==}
 
   '@pixi-spine/base@4.0.6':
     resolution: {integrity: sha512-m7tbwGF9LTWoDP3/p1lj7tPYUiZroFGJa3hqCpDT24oP0+qPwm81zhvOddcvKpm9WvyG7EahQfncayXMNm0n7A==}
@@ -837,6 +843,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.4':
     optional: true
+
+  '@hazart-pkg/live2d-core@1.0.1': {}
 
   '@pixi-spine/base@4.0.6(@pixi/core@7.4.2)(@pixi/display@7.4.2(@pixi/core@7.4.2))(@pixi/graphics@7.4.2(@pixi/core@7.4.2)(@pixi/display@7.4.2(@pixi/core@7.4.2))(@pixi/sprite@7.4.2(@pixi/core@7.4.2)(@pixi/display@7.4.2(@pixi/core@7.4.2))))(@pixi/mesh-extras@7.4.2(@pixi/core@7.4.2)(@pixi/mesh@7.4.2(@pixi/core@7.4.2)(@pixi/display@7.4.2(@pixi/core@7.4.2))))(@pixi/mesh@7.4.2(@pixi/core@7.4.2)(@pixi/display@7.4.2(@pixi/core@7.4.2)))(@pixi/sprite@7.4.2(@pixi/core@7.4.2)(@pixi/display@7.4.2(@pixi/core@7.4.2)))':
     dependencies:
