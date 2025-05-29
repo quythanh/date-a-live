@@ -59,7 +59,7 @@ export default class Live2dV3 {
     this.app = new Application({
       width,
       height,
-      transparent: true,
+      backgroundAlpha: 0,
       powerPreference: "high-performance"
     });
     el.replaceWith(this.app.view);
