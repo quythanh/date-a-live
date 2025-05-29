@@ -1,9 +1,21 @@
 import $ from 'jquery';
 import { Application, Point, Sprite } from "pixi.js";
 import L2D from "./L2D";
-import { httpGet } from "../utility";
+import { httpGet, isDom } from "../utility";
 import BuiltinAnimationBlenders from './live2dcubism/framework/builtin/BuiltinAnimationBlenders';
 import bgEffect from './background_effect';
+
+type Live2dV3Args = {
+  folderName: string;
+  basePath: string;
+  modelName: string;
+  width: number;
+  height: number;
+  bg?: string;
+  el: any;
+  sizeLimit: boolean;
+  mobileLimit: boolean;
+}
 
 let favorPoint: number = 0;
 let favorLevel: number = 1;
@@ -27,75 +39,22 @@ export default class Live2dV3 {
   private _meshes;
   private _physicsRig;
 
-  constructor({
+  private constructor({
     folderName,
     basePath,
     modelName,
     width = 500,
     height = 300,
     bg = "assets/res/basic/scene/bg/kanban/green.png",
-    el,
-    sizeLimit,
-    mobileLimit,
-    sounds,
-  }) {
-    if (typeof Live2DCubismCore === "undefined") {
-      console.error(
-        'live2dv3 failed to load:\nMissing live2dcubismcore.js\nPlease add "https://cdn.jsdelivr.net/gh/HCLonely/Live2dV3/js/live2dcubismcore.min.js" to the "<script>" tag.\nLook at https://github.com/HCLonely/Live2dV3',
-      );
-      return;
-    }
-    if (!el) {
-      console.error('"el" parameter is required');
-      return;
-    }
-
-    if (!this.isDom(el)) {
-      if (el.length === 0) {
-        console.error(
-          "live2dv3 failed to load:\n",
-          el,
-          "is not a HTMLElement object",
-        );
-        return;
-      }
-      if (!this.isDom(el[0])) {
-        console.error(
-          "live2dv3 failed to load:\n",
-          el[0],
-          "is not a HTMLElement object",
-        );
-        return;
-      }
-      el = el[0];
-    }
-
-    if (
-      sizeLimit &&
-      (document.documentElement.clientWidth < width ||
-        document.documentElement.clientHeight < height)
-    )
-    return;
-    if (
-      mobileLimit &&
-      /Mobile|Mac OS|Android|iPhone|iPad/i.test(navigator.userAgent)
-    )
-    return;
-
+    el
+  }: Live2dV3Args) {
     this.l2d = new L2D(basePath);
-    //external audio
     this.audio = new Audio();
     this.basePath = basePath;
-    //external bg
     this.bg = bg;
     this.folderName = folderName;
-    //external bgeffect
-    //bgEffect.backgroundManager(folderName, this);
-
-    if (modelName) {
-      this.modelName = modelName;
-      this.l2d.load(folderName, modelName, this);
-    }
+    this.modelName = modelName;
+    this.l2d.load(folderName, modelName, this);
 
     this.app = new Application({
       width,
@@ -114,12 +73,9 @@ export default class Live2dV3 {
       this.model.masks.update(this.app.renderer);
     });
 
-    window.onresize = (event) => {
-      if (event === undefined) {
-        event = null;
-      }
-      this.app.view.style.width = `${width}px`;
-      this.app.view.style.height = `${height}px`;
+    window.onresize = () => {
+      this.app.view.style!.width = `${width}px`;
+      this.app.view.style!.height = `${height}px`;
       this.app.renderer.resize(width, height);
 
       if (this.model) {
@@ -131,20 +87,23 @@ export default class Live2dV3 {
         this.model.masks.resize(this.app.view.width, this.app.view.height);
 
         //modification date a live
-        if ($("#posx").length)
-        this.model.position = new Point(
-          $("#posx").val(),
-          $("#posy").val(),
-        );
+        if ($("#posx").length) {
+          this.model.position = new Point(
+            Number.parseInt($("#posx").val() as string),
+            Number.parseInt($("#posy").val() as string),
+          );
+        }
       }
     };
-    this.isClick = false;
-    this.app.view.addEventListener("mousedown", (event) => {
-      this.isClick = true;
+
+    let isClick = false;
+
+    this.app.view.addEventListener("mousedown", () => {
+      isClick = true;
     });
     this.app.view.addEventListener("mousemove", (event) => {
-      if (this.isClick) {
-        this.isClick = false;
+      if (isClick) {
+        isClick = false;
         if (this.model) {
           this.model.inDrag = true;
         }
@@ -157,53 +116,27 @@ export default class Live2dV3 {
         this.model.pointerY = -mouseY / this.app.view.width;
       }
     });
-    this.app.view.addEventListener("mouseup", (event) => {
-      if (!this.model) {
-        return;
-      }
+    this.app.view.addEventListener("mouseup", (event: MouseEvent) => {
+      if (!this.model) return;
 
-      if (this.isClick) {
-        /*
-        if (this.isHit('TouchHead', event.offsetX, event.offsetY)) {
-        this.startAnimation('touch_head', 'base')
-        } else if (this.isHit('TouchSpecial', event.offsetX, event.offsetY)) {
-        this.startAnimation('touch_special', 'base')
-        } else {
-        const bodyMotions = ['touch_body', 'main_1', 'main_2', 'main_3']
-        const currentMotion = bodyMotions[Math.floor(Math.random() * bodyMotions.length)]
-        this.startAnimation(currentMotion, 'base')
-        }
-        if (sounds && sounds.length > 0) {
-        const soundFile = sounds[Math.floor((Math.random() * sounds.length))]
-        const filePath = /^https?:\/\//.test(soundFile) ? soundFile : [basePath, modelName, soundFile].join('/').replace(/(?<!:)\/\//g, '/')
-        if (typeof Howl !== 'undefined') {
-        new Howl({ src: [filePath] }).play()
-        } else if (typeof Audio !== 'undefined') {
-        new Audio(filePath).play()
-        } else {
-        console.error('Current browser does not support playing sound.')
-        }
-        }
-        */
+      if (isClick) {
         //dal model
         if (this.isHit("HitArea", event.offsetX, event.offsetY)) {
           console.log("head");
           if (this.model.motions.get(`id_favor${favorLevel}_${1}`))
           this.startAnimation(`id_favor${favorLevel}_${1}`, "base");
-        }
-        if (this.isHit("HitArea2", event.offsetX, event.offsetY)) {
+        } else if (this.isHit("HitArea2", event.offsetX, event.offsetY)) {
           console.log("pai");
           if (this.model.motions.get(`id_favor${favorLevel}_${2}`))
           this.startAnimation(`id_favor${favorLevel}_${2}`, "base");
-        }
-        if (this.isHit("HitArea3", event.offsetX, event.offsetY)) {
+        } else if (this.isHit("HitArea3", event.offsetX, event.offsetY)) {
           console.log("idk");
           if (this.model.motions.get(`id_favor${favorLevel}_${3}`))
           this.startAnimation(`id_favor${favorLevel}_${3}`, "base");
         }
       }
 
-      this.isClick = false;
+      isClick = false;
       this.model.inDrag = false;
     });
   }
@@ -212,7 +145,7 @@ export default class Live2dV3 {
     this.app.stage.removeChildren();
 
     this.model = model;
-    this.model.update = this.onUpdate;
+    this.model.update = this._onUpdate;
     this.model.animator.addLayer(
       "base",
       BuiltinAnimationBlenders.OVERRIDE,
@@ -283,10 +216,10 @@ export default class Live2dV3 {
       }
     }, 500);
 
-    window.onresize();
+    window.dispatchEvent(new Event('resize'));
   }
 
-  onUpdate(delta) {
+  private _onUpdate(delta: number) {
     const deltaTime = 0.016 * delta;
 
     if (!this.animator.isPlaying) {
@@ -347,7 +280,7 @@ export default class Live2dV3 {
     this._coreModel.drawables.resetDynamicFlags();
   }
 
-  startAnimation(motionId, layerId) {
+  startAnimation(motionId: string, layerId) {
     if (!this.model) {
       return;
     }
@@ -376,13 +309,9 @@ export default class Live2dV3 {
           this.audio = new Audio(audioPath);
           this.audio.play();
 
-          this.audio.addEventListener(
-            "canplay",
-            () => {
-              l.play(m);
-            },
-            false,
-          );
+          this.audio.addEventListener("canplay", () => {
+            l.play(m);
+          }, false);
 
           if (!$("#show-subtitle").is(':checked')) break;
           const subtitleJSON = JSON.parse(httpGet("assets/res/data/subtitle.json"));
@@ -414,15 +343,11 @@ export default class Live2dV3 {
     }
   }
 
-  isHit(id, posX, posY) {
-    if (!this.model) {
-      return false;
-    }
+  isHit(id, posX: number, posY: number) {
+    if (!this.model) return false;
 
     const m = this.model.getModelMeshById(id);
-    if (!m) {
-      return false;
-    }
+    if (!m) return false;
 
     const vertexOffset = 0;
     const vertexStep = 2;
@@ -459,19 +384,51 @@ export default class Live2dV3 {
     return left <= tx && tx <= right && top <= ty && ty <= bottom;
   }
 
-  isDom(e) {
-    if (typeof HTMLElement === "object") {
-      return e instanceof HTMLElement;
+  static createInstance(args: Live2dV3Args) {
+    if (typeof Live2DCubismCore === "undefined") {
+      throw new Error(
+        `live2dv3 failed to load:
+        Missing live2dcubismcore.js
+        Please add "https://cdn.jsdelivr.net/gh/HCLonely/Live2dV3/js/live2dcubismcore.min.js" to the "<script>" tag.
+        Look at https://github.com/HCLonely/Live2dV3`
+      );
     }
-    return (
-      e &&
-      typeof e === "object" &&
-      e.nodeType === 1 &&
-      typeof e.nodeName === "string"
-    );
-  }
 
-  loadModel(modelName) {
-    this.l2d.load(modelName || this.modelName, this);
+    const { width, height, sizeLimit, mobileLimit } = args;
+    let el = args.el;
+
+    if (!el) {
+      throw new Error("`el` parameter is required");
+    }
+
+    if (!isDom(el)) {
+      if (el.length === 0) {
+        throw new Error(`live2dv3 failed to load: ${el} is not a HTMLElement object`);
+      }
+
+      if (!isDom(el[0])) {
+        throw new Error(`live2dv3 failed to load: ${el[0]} is not a HTMLElement object`);
+      }
+
+      el = el[0];
+    }
+
+    if (
+      sizeLimit &&
+      (document.documentElement.clientWidth < width ||
+        document.documentElement.clientHeight < height)
+    ) {
+      throw new Error("The current viewport size does not meet the minimum requirements for this application.")
+      // throw new Error(`Minimum screen size required is ${width}x${height}px. Please resize your window to continue.`);
+    }
+
+    if (
+      mobileLimit &&
+      /Mobile|Mac OS|Android|iPhone|iPad/i.test(navigator.userAgent)
+    ) {
+      throw new Error("Mobile devices are currently not supported. Please use a desktop device.");
+    }
+
+    return new Live2dV3({...args, el});
   }
 }

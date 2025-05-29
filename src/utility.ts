@@ -4,3 +4,15 @@ export function httpGet(theUrl: string): string {
     xmlHttp.send(null);
     return xmlHttp.responseText;
 }
+
+export function isDom(e: any) {
+  if (typeof HTMLElement === "object") {
+    return e instanceof HTMLElement;
+  }
+  return (
+    e &&
+    typeof e === "object" &&
+    e.nodeType === 1 &&
+    typeof e.nodeName === "string"
+  );
+}

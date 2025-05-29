@@ -185,7 +185,7 @@ const Live2DViewer = {
   },
 
   initModel: () => {
-    Live2DViewer.model = new Live2dV3({
+    Live2DViewer.model = Live2dV3.createInstance({
       el: $('#L2dCanvas'),
       basePath: 'assets/res/basic/modle/bust_kanban/',
       modelName,
