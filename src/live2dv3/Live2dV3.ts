@@ -315,7 +315,7 @@ export default class Live2dV3 {
 
           if (!$("#show-subtitle").is(':checked')) break;
 
-          const lang = "en";
+          const lang = $("#language option:selected").val() as string;
           let subJson: string = '';
           try {
             subJson = httpGet(`assets/res/data/subtitle/${this.folderName}/${lang}.json`);
@@ -325,7 +325,8 @@ export default class Live2dV3 {
             const subtitle = JSON.parse(subJson);
             if (subtitle[motionId]) {
               const subtitleElement = $(".subtitle").first();
-              subtitleElement.text(subtitle[motionId]);
+              // use html() to display furigana
+              subtitleElement.html(subtitle[motionId]);
               subtitleElement.addClass("in");
 
               setTimeout(() => {
