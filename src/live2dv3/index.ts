@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Live2DViewer, { BackgroundType } from "./user";
+import Subtitle from './subtitle';
 
 window.onload = () => {
   Live2DViewer.init();
@@ -22,6 +23,4 @@ $("#bgKanban").on("click", () => {
   Live2DViewer.switchBgType(BackgroundType.kanban);
 })
 
-$("#show-furigana").on("change", () => {
-  $("#subtitle").toggleClass("no-furi");
-})
+$("#show-furigana").on("change", Subtitle.toggleFuriSub)

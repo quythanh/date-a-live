@@ -4,6 +4,7 @@ import L2D from "./L2D";
 import { httpGet, isDom } from "../utility";
 import BuiltinAnimationBlenders from './live2dcubism/framework/builtin/BuiltinAnimationBlenders';
 import bgEffect from './background_effect';
+import Subtitle from './subtitle';
 
 type Live2dV3Args = {
   folderName: string;
@@ -313,7 +314,7 @@ export default class Live2dV3 {
             l.play(m);
           }, false);
 
-          if (!$("#show-subtitle").is(':checked')) break;
+          if (!Subtitle.isShow()) break;
 
           const lang = $("#language option:selected").val() as string;
           let subJson: string = '';
@@ -324,14 +325,9 @@ export default class Live2dV3 {
           } finally {
             const subtitle = JSON.parse(subJson);
             if (subtitle[motionId]) {
-              const subtitleElement = $("#subtitle");
-              // use html() to display furigana
-              subtitleElement.html(subtitle[motionId]);
-              subtitleElement.addClass("show");
-
-              this.audio.onended = () => {
-                subtitleElement.removeClass("show");
-              };
+              Subtitle.setText(subtitle[motionId]);
+              Subtitle.show();
+              this.audio.onended = Subtitle.hide;
             }
           }
           break;
