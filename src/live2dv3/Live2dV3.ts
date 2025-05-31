@@ -324,23 +324,13 @@ export default class Live2dV3 {
           } finally {
             const subtitle = JSON.parse(subJson);
             if (subtitle[motionId]) {
-              const subtitleElement = $(".subtitle").first();
+              const subtitleElement = $("#subtitle");
               // use html() to display furigana
               subtitleElement.html(subtitle[motionId]);
-              subtitleElement.addClass("in");
-
-              setTimeout(() => {
-                subtitleElement.css("display", "block");
-              }, 500);
+              subtitleElement.addClass("show");
 
               this.audio.onended = () => {
-                subtitleElement.removeClass("in");
-                subtitleElement.addClass("out");
-
-                setTimeout(() => {
-                  subtitleElement.css("display", "none");
-                  subtitleElement.removeClass("out");
-                }, 500);
+                subtitleElement.removeClass("show");
               };
             }
           }

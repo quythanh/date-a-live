@@ -7,14 +7,11 @@ window.onload = () => {
 };
 
 $("#btn-background-menu").on("click", () => {
-  $(".bgSelectorContainer").first().addClass("in");
-  setTimeout(() => {
-    $(".bgSelectorContainer").first().css("display", "table");
-  }, 500);
+  $(".bgSelectorContainer").first().addClass("show");
 })
 
 $("#bgSelectorCloseButton").on("click", () => {
-  Live2DViewer.closeBgContainer();
+  $('.bgSelectorContainer').first().removeClass("show");
 })
 
 $("#bgNormal").on("click", () => {
@@ -23,4 +20,8 @@ $("#bgNormal").on("click", () => {
 
 $("#bgKanban").on("click", () => {
   Live2DViewer.switchBgType(BackgroundType.kanban);
+})
+
+$("#show-furigana").on("change", () => {
+  $("#subtitle").toggleClass("no-furi");
 })

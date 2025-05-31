@@ -12,7 +12,6 @@ export enum BackgroundType {
 type TLive2DViewer = {
   model: Live2dV3 | null;
   checkInView: (elQuerySelector: string, partial: boolean) => boolean;
-  closeBgContainer: () => void;
   switchBgType: (type: BackgroundType, isAdd?: boolean) => void;
   loadMotion: (model: string) => void;
   init: () => void;
@@ -43,15 +42,6 @@ const Live2DViewer: TLive2DViewer = {
     const isPart = ((elTop < 0 && elBottom > 0) || (elTop > 0 && elTop <= contHeight)) && partial;
 
     return isTotal || isPart;
-  },
-
-  closeBgContainer: () => {
-    $('.bgSelectorContainer').first().removeClass("in");
-    $('.bgSelectorContainer').first().addClass("out");
-    setTimeout(() => {
-      $('.bgSelectorContainer').first().css("display", "none");
-      $('.bgSelectorContainer').first().removeClass("out");
-    }, 100);
   },
 
   switchBgType: (type: BackgroundType, isAdd: boolean = false) => {
@@ -212,7 +202,7 @@ const Live2DViewer: TLive2DViewer = {
       sizeLimit: false,
       width: window.innerWidth,
       height: window.innerHeight,
-      mobileLimit: true
+      mobileLimit: false
     });
   }
 }

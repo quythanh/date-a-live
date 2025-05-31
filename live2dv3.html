@@ -42,28 +42,22 @@
         </nav>
 
         <main>
-            <div class="subtitleContainer">
-                <div class="subtitleTable">
-                    <div class="subtitle"></div>
-                </div>
-            </div>
+            <div id="subtitle" class="no-furi"></div>
 
             <canvas id="L2dCanvas"></canvas>
 
             <div class="bgSelectorContainer">
-                <div class="bgSelectorContainerTable">
-                    <div class="bgSelectorUI">
-                        <div class="title">
-                            Select Background
-                            <div id="bgSelectorCloseButton">&#10006;</div>
-                        </div>
-                        <div class="bgCategoryContainer">
-                            <div id="bgNormal" class="bgCategory selected">Normal</div>
-                            <div id="bgKanban" class="bgCategory">Kanban</div>
-                        </div>
-                        <div class="selector" id="bgNormalContainer"></div>
-                        <div class="selector" id="bgKanbanContainer"></div>
+                <div class="bgSelectorUI">
+                    <div class="title">
+                        Select Background
+                        <div id="bgSelectorCloseButton">&#10006;</div>
                     </div>
+                    <div class="bgCategoryContainer">
+                        <div id="bgNormal" class="bgCategory selected">Normal</div>
+                        <div id="bgKanban" class="bgCategory">Kanban</div>
+                    </div>
+                    <div class="selector" id="bgNormalContainer"></div>
+                    <div class="selector" id="bgKanbanContainer"></div>
                 </div>
             </div>
         </main>
@@ -119,6 +113,8 @@
                 <label for="mloop">Loop</label>
                 <input type="checkbox" name="subtitle" id="show-subtitle" checked>
                 <label for="show-subtitle">Subtitle</label>
+                <input type="checkbox" name="furigana" id="show-furigana">
+                <label for="furigane">Use Furigana (Japanese only)</label>
             </div>
 
             <br>
