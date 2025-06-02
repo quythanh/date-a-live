@@ -138,6 +138,7 @@ export default class Live2dV3 {
   changeCanvas(model: Model, bg = "assets/res/basic/scene/bg/kanban/green.png") {
     this.app.stage.removeChildren();
 
+    this.bg = bg;
     this.model = model;
     this.model.update = this._onUpdate;
     this.model.animator.addLayer(

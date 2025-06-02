@@ -216,8 +216,7 @@ function changeModel(
 ) {
   l2dViewer.modelName = modelName;
   l2dViewer.folderName = folderName;
-  l2dViewer.model = null;
-  l2dViewer.bg = bg;
+  l2dViewer.model = undefined;
   L2D.load(l2dViewer, bg, basePath);
 };
 

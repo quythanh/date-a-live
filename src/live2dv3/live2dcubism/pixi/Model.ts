@@ -11,6 +11,7 @@ import type UserData from "../framework/user/UserData";
 
 export default class Model extends Container {
   public motions?: Map<string, Animation>;
+  public inDrag?: boolean;
 
   private _coreModel: CoreModel;
   private _textures: Texture[];
