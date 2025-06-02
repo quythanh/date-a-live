@@ -49,9 +49,26 @@ type BackgroundEffectData = {
   state: string;
 }
 
+type BackgroundEffect = {
+  list: {
+    [bgName: string]: {
+      x: number;
+      y: number;
+      scale: number;
+    }
+  },
+  isLoaded: boolean;
+  backgroundManager: (model: string, l2dViewer: Live2dV3) => void;
+  addEffect: (data: BackgroundEffectData[], l2dViewer: Live2dV3) => void;
+  addSetting: (l2dViewer: Live2dV3) => void;
+  changePosX: (index: number, value: number, l2dViewer: Live2dV3) => void;
+  changePosY: (index: number, value: number, l2dViewer: Live2dV3) => void;
+  changeScale: (index: number, value: number, l2dViewer: Live2dV3) => void;
+}
+
 const charaEffect = JSON.parse(httpGet("assets/res/data/bgeffect.json"));
 
-const bgEffect = {
+const bgEffect: BackgroundEffect = {
   list: {},
   isLoaded: false,
 
@@ -99,13 +116,7 @@ const bgEffect = {
 
   addSetting: (l2dViewer: Live2dV3) => {
     $('#bg-effect').text('');
-    let n = 0; // Spine index to do
-    // spine finder
-    for (; n < l2dViewer.app.stage.children.length; n++) {
-      if (l2dViewer.app.stage.children[n].constructor.name === "Spine") {
-        break;
-      }
-    }
+    let n = l2dViewer.app.stage.children.findIndex(c => c.constructor.name === "Spine");
 
     for (const i in bgEffect.list) {
       const div = document.createElement('div');
@@ -145,28 +156,19 @@ const bgEffect = {
       y.setAttribute('index', n.toString());
       scale.setAttribute('index', n.toString());
 
-      // Don't ask me why number '4' here.
-      // I'm just a maintainer and don't even know
-      // what the heck is going on here.
-      // Just put '4' for safer code.
-      x.onchange = (e: Event) => {
-        const el = e.target as HTMLInputElement;
-        const index = Number.parseInt(el.getAttribute('index') ?? "4");
-        const value = Number.parseInt(el.value);
-        bgEffect.changePosX(index, value, l2dViewer);
-      };
-      y.onchange = (e: Event) => {
-        const el = e.target as HTMLInputElement;
-        const index = Number.parseInt(el.getAttribute('index') ?? "4");
-        const value = Number.parseInt(el.value);
-        bgEffect.changePosY(index, value, l2dViewer);
-      };
-      scale.onchange = (e: Event) => {
-        const el = e.target as HTMLInputElement;
-        const index = Number.parseInt(el.getAttribute('index') ?? "4");
-        const value = Number.parseInt(el.value);
-        bgEffect.changeScale(index, value, l2dViewer);
-      };
+      const __change = (
+        fn: (index: number, value: number, l2dViewer: Live2dV3) => void
+      ) => {
+        return (e: Event) => {
+          const el = e.target as HTMLInputElement;
+          const index = Number.parseInt(el.getAttribute('index')!);
+          const value = Number.parseInt(el.value);
+          fn(index, value, l2dViewer);
+        }
+      }
+      x.onchange = __change(bgEffect.changePosX);
+      y.onchange = __change(bgEffect.changePosY);
+      scale.onchange = __change(bgEffect.changeScale);
 
       //t
       let t = document.createElement('div');

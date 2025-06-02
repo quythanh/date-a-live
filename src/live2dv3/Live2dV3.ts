@@ -5,6 +5,7 @@ import { httpGet, isDom } from "../utility";
 import BuiltinAnimationBlenders from './live2dcubism/framework/builtin/BuiltinAnimationBlenders';
 import bgEffect from './background_effect';
 import Subtitle from './subtitle';
+import type Model from './live2dcubism/pixi/Model';
 
 type Live2dV3Args = {
   folderName: string;
@@ -30,7 +31,7 @@ export default class Live2dV3 {
   public folderName: string;
   public canvas: HTMLDivElement;
   public app: Application;
-  public model;
+  public model?: Model;
   public animator;
   public motions;
   public children;
@@ -66,34 +67,27 @@ export default class Live2dV3 {
     el.replaceWith(this.app.view);
 
     this.app.ticker.add((deltaTime) => {
-      if (!this.model) {
-        return;
-      }
+      if (!this.model) return;
 
       this.model.update(deltaTime);
       this.model.masks.update(this.app.renderer);
     });
 
     window.onresize = () => {
-      this.app.view.style!.width = `${width}px`;
-      this.app.view.style!.height = `${height}px`;
-      this.app.renderer.resize(width, height);
+      const _w = window.innerWidth;
+      const _h = window.innerHeight;
+      this.app.view.style!.width = `${_w}px`;
+      this.app.view.style!.height = `${_h}px`;
+      this.app.renderer.resize(_w, _h);
 
       if (this.model) {
-        this.model.position = new Point(width * 0.5, height * 0.5);
-        this.model.scale = new Point(
-          this.model.position.x * 1,
-          this.model.position.x * 1,
-        );
-        this.model.masks.resize(this.app.view.width, this.app.view.height);
+        $("#posx").val(_w * 0.5);
+        $("#posy").val(_h * 0.5);
 
-        //modification date a live
-        if ($("#posx").length) {
-          this.model.position = new Point(
-            Number.parseInt($("#posx").val() as string),
-            Number.parseInt($("#posy").val() as string),
-          );
-        }
+        this.model.position = new Point(_w * 0.5, _h * 0.5);
+
+        this.model.scale = new Point(_w * 0.5, _w * 0.5);
+        this.model.masks.resize(_w, _h);
       }
     };
 
@@ -142,7 +136,7 @@ export default class Live2dV3 {
     });
   }
 
-  changeCanvas(model, bg = "assets/res/basic/scene/bg/kanban/green.png") {
+  changeCanvas(model: Model, bg = "assets/res/basic/scene/bg/kanban/green.png") {
     this.app.stage.removeChildren();
 
     this.model = model;
@@ -154,58 +148,16 @@ export default class Live2dV3 {
     );
     //background
     const foreground = Sprite.from(bg);
-    //calculator
+    const __scaleFg = (fg: Sprite) => {
+      const ratio = Math.max(window.innerWidth / fg.width, window.innerHeight / fg.height);
+      fg.width *= ratio;
+      fg.height *= ratio;
+    }
     if (foreground.height !== 1) {
-      let hRatio = foreground.height / window.innerHeight;
-      let wRatio = foreground.width / window.innerWidth;
-      let ratio;
-      if (hRatio >= 1 && wRatio >= 1) {
-        //too high, so we scale downn
-        hRatio = 1 / hRatio;
-        wRatio = 1 / wRatio;
-        ratio = hRatio >= wRatio ? hRatio : wRatio;
-      } else {
-        if (hRatio >= 1) {
-          ratio = 1 / wRatio;
-        } else if (wRatio >= 1) {
-          ratio = 1 / hRatio;
-        } else {
-          //lower, ex 0.8 and 0.9
-          // lek ben 1, 1 = 0.8 * x, x=1/0.8
-          hRatio = 1 / hRatio;
-          wRatio = 1 / wRatio;
-          ratio = hRatio >= wRatio ? hRatio : wRatio;
-        }
-      }
-      foreground.width *= ratio;
-      foreground.height *= ratio;
+      __scaleFg(foreground);
     }
     foreground.texture.baseTexture.on("loaded", () => {
-      let hRatio = foreground.height / window.innerHeight;
-      let wRatio = foreground.width / window.innerWidth;
-      let ratio;
-      if (hRatio >= 1 && wRatio >= 1) {
-        //too high, so we scale downn
-        hRatio = 1 / hRatio;
-        wRatio = 1 / wRatio;
-        ratio = hRatio >= wRatio ? hRatio : wRatio;
-      } else {
-        if (hRatio >= 1) {
-          //upsize w
-          ratio = 1 / wRatio;
-        } else if (wRatio >= 1) {
-          //upsize h
-          ratio = 1 / hRatio;
-        } else {
-          //lower, ex 0.8 and 0.9
-          // lek ben 1, 1 = 0.8 * x, x=1/0.8
-          hRatio = 1 / hRatio;
-          wRatio = 1 / wRatio;
-          ratio = hRatio >= wRatio ? hRatio : wRatio;
-        }
-      }
-      foreground.width *= ratio;
-      foreground.height *= ratio;
+      __scaleFg(foreground);
     });
     this.app.stage.addChild(foreground);
     bgEffect.backgroundManager(this.folderName, this);
@@ -281,7 +233,7 @@ export default class Live2dV3 {
     this._coreModel.drawables.resetDynamicFlags();
   }
 
-  startAnimation(motionId: string, layerId) {
+  startAnimation(motionId: string, layerId: string) {
     if (!this.model) {
       return;
     }
@@ -337,7 +289,7 @@ export default class Live2dV3 {
     }
   }
 
-  isHit(id, posX: number, posY: number) {
+  isHit(id: string, posX: number, posY: number) {
     if (!this.model) return false;
 
     const m = this.model.getModelMeshById(id);
@@ -356,18 +308,10 @@ export default class Live2dV3 {
       const x = vertices[vertexOffset + i * vertexStep];
       const y = vertices[vertexOffset + i * vertexStep + 1];
 
-      if (x < left) {
-        left = x;
-      }
-      if (x > right) {
-        right = x;
-      }
-      if (y < top) {
-        top = y;
-      }
-      if (y > bottom) {
-        bottom = y;
-      }
+      left = Math.min(x, left);
+      right = Math.max(x, right);
+      top = Math.min(y, top);
+      bottom = Math.max(y, bottom);
     }
 
     const mouseX = m.worldTransform.tx - posX;
