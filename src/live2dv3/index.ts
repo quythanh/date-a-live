@@ -1,26 +1,23 @@
 import $ from 'jquery';
-import Live2DViewer, { BackgroundType } from "./user";
+import Live2DViewer from "./user";
 import Subtitle from './subtitle';
+import BackgroundMenu from './background_menu';
+import { BackgroundType } from './background_menu';
 
 window.onload = () => {
   Live2DViewer.init();
   Live2DViewer.initModel();
 };
 
-$("#btn-background-menu").on("click", () => {
-  $(".bgSelectorContainer").first().addClass("show");
+$("#btn-background-menu").on("click", BackgroundMenu.show)
+$("#bgSelectorCloseButton").on("click", BackgroundMenu.hide)
+
+$("#bgNormal").on("change", () => {
+  BackgroundMenu.changeCategory(BackgroundType.normal);
 })
 
-$("#bgSelectorCloseButton").on("click", () => {
-  $('.bgSelectorContainer').first().removeClass("show");
-})
-
-$("#bgNormal").on("click", () => {
-  Live2DViewer.switchBgType(BackgroundType.normal, true);
-})
-
-$("#bgKanban").on("click", () => {
-  Live2DViewer.switchBgType(BackgroundType.kanban);
+$("#bgKanban").on("change", () => {
+  BackgroundMenu.changeCategory(BackgroundType.kanban);
 })
 
 $("#show-furigana").on("change", Subtitle.toggleFuriSub)

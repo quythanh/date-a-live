@@ -3,16 +3,12 @@ import { Point } from "pixi.js";
 import L2D from "./L2D";
 import Live2dV3 from "./Live2dV3";
 import { httpGet } from '../utility';
-
-export enum BackgroundType {
-  normal = 0,
-  kanban = 1
-};
+import BackgroundMenu from './background_menu';
+import { BackgroundType } from './background_menu';
 
 type TLive2DViewer = {
   model: Live2dV3 | null;
   checkInView: (elQuerySelector: string, partial: boolean) => boolean;
-  switchBgType: (type: BackgroundType, isAdd?: boolean) => void;
   loadMotion: (model: string) => void;
   init: () => void;
   initModel: () => void;
@@ -21,10 +17,6 @@ type TLive2DViewer = {
 // opt
 let modelName: string;
 let folderName: string;
-
-// misc
-let selectedBgType: BackgroundType = BackgroundType.normal;
-var currentBgIndex: number = 0; // reduce data consumption & optimization
 
 const Live2DViewer: TLive2DViewer = {
   model: null,
@@ -42,66 +34,6 @@ const Live2DViewer: TLive2DViewer = {
     const isPart = ((elTop < 0 && elBottom > 0) || (elTop > 0 && elTop <= contHeight)) && partial;
 
     return isTotal || isPart;
-  },
-
-  switchBgType: (type: BackgroundType, isAdd: boolean = false) => {
-    const bg = JSON.parse(httpGet('assets/res/data/bg.json'));
-    //to do without reload, faster loading
-    selectedBgType = type;
-    $('.bgCategory').removeClass('selected');
-    $('.bgCategory').eq(selectedBgType).addClass('selected');
-
-    const __createBackgroundImg = (bgPath: string = "assets/res/basic/scene/bg/kanban/green.png") => {
-      const img = document.createElement('img');
-      img.classList.add('l2dv3-thumb');
-      img.src = bgPath;
-      img.onclick = () => {
-        changeBackground(bgPath, Live2DViewer.model);
-        Live2DViewer.closeBgContainer();
-      }
-      return img;
-    }
-
-    switch (selectedBgType) {
-      case BackgroundType.normal:
-        $('#bgNormalContainer').css("display", "flex");
-        $('#bgKanbanContainer').css("display", "none");
-
-        if (!isAdd) return;
-
-        const keys = Object.keys(bg.normal);
-        if (currentBgIndex === keys.length) return;
-
-        // load more
-        let n = currentBgIndex;
-        currentBgIndex = Math.min(currentBgIndex + 15, keys.length);
-
-        // better approach
-        for (; n < currentBgIndex; n++) {
-          const img = __createBackgroundImg(keys[n]);
-
-          if (n === currentBgIndex - 1 && n !== keys.length - 1) {
-            img.id = "scspy";
-          }
-
-          $('#bgNormalContainer').append(img);
-        }
-        break;
-
-      case BackgroundType.kanban:
-        if ($('#bgKanbanContainer').html() != "") {
-          $('#bgKanbanContainer').css("display", "flex");
-          $('#bgNormalContainer').css("display", "none");
-          return;
-        }
-        for (const i in bg.kanban) {
-          const img = __createBackgroundImg(i);
-          $('#bgKanbanContainer').append(img);
-        }
-        $('#bgKanbanContainer').css("display", "flex");
-        $('#bgNormalContainer').css("display", "none");
-        break;
-    }
   },
 
   loadMotion: (model: string) => {
@@ -134,19 +66,11 @@ const Live2DViewer: TLive2DViewer = {
     Live2DViewer.loadMotion(`assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`);
 
     // bg3
-    Live2DViewer.switchBgType(selectedBgType, true);
+    BackgroundMenu.changeCategory(BackgroundType.normal);
 
     // pos
     $('#posx').val(window.innerWidth * 0.5);
     $('#posy').val(window.innerHeight * 0.5);
-
-    $("#bgNormalContainer").on("scroll", () => {
-      if (!$("#scspy").length) return;
-      if (Live2DViewer.checkInView('#scspy', true)) {
-        $('#scspy').removeAttr('id');
-        Live2DViewer.switchBgType(BackgroundType.normal, true);
-      }
-    });
 
     $('#models').on("change", () => {
       folderName = $("#models option:selected").val() as string;
@@ -161,7 +85,7 @@ const Live2DViewer: TLive2DViewer = {
           url = `assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`;
         },
         complete: () => {
-          changeModel('assets/res/basic/modle/bust_kanban/', folderName, modelName, Live2DViewer.model, Live2DViewer.model.bg)
+          changeModel(Live2DViewer.model!, Live2DViewer.model!.bg, 'assets/res/basic/modle/bust_kanban/', folderName, modelName)
           Live2DViewer.loadMotion(url)
         }
       });
@@ -169,24 +93,16 @@ const Live2DViewer: TLive2DViewer = {
 
     // onchange motions
     $('#motions').on("change", () => {
-      if (Live2DViewer.model == null) {
-        throw new Error("`model` hasn't been initialized.");
-      }
-
       const motionName = $("#motions option:selected").val() as string;
-      Live2DViewer.model.startAnimation(motionName, 'base');
+      Live2DViewer.model!.startAnimation(motionName, 'base');
     });
 
     const _onPosChange = (e: JQuery.ChangeEvent) => {
-      if (Live2DViewer.model == null) {
-        throw new Error("`model` hasn't been initialized.");
-      }
-
       const el = $(e.target);
       if (el.val() == '') el.val(0);
-      const x = Number.parseInt($('$posx').val() as string);
+      const x = Number.parseInt($('#posx').val() as string);
       const y = Number.parseInt($('#posy').val() as string);
-      changePosition(x, y, Live2DViewer.model);
+      Live2DViewer.model!.model!.position = new Point(x, y);
     };
 
     $('#posx').on("change", _onPosChange);
@@ -208,24 +124,16 @@ const Live2DViewer: TLive2DViewer = {
 }
 
 function changeModel(
+  l2dViewer: Live2dV3,
+  bg: string = 'assets/res/basic/scene/bg/kanban/green.png',
   basePath: string,
   folderName: string,
   modelName: string,
-  l2dViewer: Live2dV3,
-  bg: string = 'assets/res/basic/scene/bg/kanban/green.png',
 ) {
   l2dViewer.modelName = modelName;
   l2dViewer.folderName = folderName;
   l2dViewer.model = undefined;
   L2D.load(l2dViewer, bg, basePath);
-};
-
-function changeBackground(bgPath: string, l2dViewer: Live2dV3) {
-  changeModel(l2dViewer.basePath, l2dViewer.folderName, l2dViewer.modelName, l2dViewer, bgPath);
-};
-
-function changePosition(x: number, y: number, l2dViewer: Live2dV3) {
-  l2dViewer.model.position = new Point(x, y);
 };
 
 export default Live2DViewer;

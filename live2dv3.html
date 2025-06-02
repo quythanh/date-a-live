@@ -53,8 +53,14 @@
                         <div id="bgSelectorCloseButton">&#10006;</div>
                     </div>
                     <div class="bgCategoryContainer">
-                        <div id="bgNormal" class="bgCategory selected">Normal</div>
-                        <div id="bgKanban" class="bgCategory">Kanban</div>
+                        <label for="bgNormal">
+                            Normal
+                            <input type="radio" value="0" name="bgCategory" id="bgNormal" checked>
+                        </label>
+                        <label for="bgKanban">
+                            Kanban
+                            <input type="radio" value="1" name="bgCategory" id="bgKanban">
+                        </label>
                     </div>
                     <div class="selector" id="bgNormalContainer"></div>
                     <div class="selector" id="bgKanbanContainer"></div>

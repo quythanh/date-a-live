@@ -122,18 +122,22 @@
     height: 30px;
     display: table;
     width: 100%;
-}
 
-.bgCategory {
-    display: table-cell;
-    text-align: center;
-    vertical-align: middle;
-    width: 50%;
-    padding: 1rem;
-    cursor: pointer;
+    input[type="radio"] {
+        display: none;
+    }
 
-    &.selected {
-        background-color: #ca3e47;
+    > label {
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+        width: 50%;
+        padding: 1rem;
+        cursor: pointer;
+
+        &:has(input[type="radio"]:checked) {
+            background-color: #ca3e47;
+        }
     }
 }
 
