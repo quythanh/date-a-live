@@ -23,7 +23,6 @@ let favorPoint: number = 0;
 let favorLevel: number = 1;
 
 export default class Live2dV3 {
-  public l2d: L2D;
   public audio;
   public basePath: string;
   public bg;
@@ -50,13 +49,13 @@ export default class Live2dV3 {
     bg = "assets/res/basic/scene/bg/kanban/green.png",
     el
   }: Live2dV3Args) {
-    this.l2d = new L2D(basePath);
     this.audio = new Audio();
     this.basePath = basePath;
     this.bg = bg;
     this.folderName = folderName;
     this.modelName = modelName;
-    this.l2d.load(folderName, modelName, this);
+
+    L2D.load(this);
 
     this.app = new Application({
       width,

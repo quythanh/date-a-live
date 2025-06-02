@@ -217,9 +217,8 @@ function changeModel(
   l2dViewer.modelName = modelName;
   l2dViewer.folderName = folderName;
   l2dViewer.model = null;
-  const l2d = new L2D(basePath);
   l2dViewer.bg = bg;
-  l2d.load(folderName, modelName, l2dViewer, bg);
+  L2D.load(l2dViewer, bg, basePath);
 };
 
 function changeBackground(bgPath: string, l2dViewer: Live2dV3) {
