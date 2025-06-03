@@ -1,14 +1,23 @@
 import Physics from "./Physics";
 import type PhysicsFactorTuple from "./PhysicsFactorTuple";
+import type PhysicsParticle from "./PhysicsParticle";
+import type PhysicsVector2 from "./PhysicsVector2";
 
 export default class PhysicsOutput {
-  public targetId;
-  public particleIndex;
+  public targetId: string;
+  public particleIndex: number;
   public weight: number;
   public factor: PhysicsFactorTuple;
-  public invert;
+  public invert: boolean;
 
-  constructor(targetId, particleIndex, weight: number, angleScale: number, factor: PhysicsFactorTuple, invert) {
+  constructor(
+    targetId: string,
+    particleIndex: number,
+    weight: number,
+    angleScale: number,
+    factor: PhysicsFactorTuple,
+    invert: boolean
+  ) {
     this.targetId = targetId;
     this.particleIndex = particleIndex;
     this.weight = weight;
@@ -21,7 +30,7 @@ export default class PhysicsOutput {
     return Physics.clampScalar(this.weight / Physics.maximumWeight, 0, 1);
   }
 
-  evaluateValue(translation, particles) {
+  evaluateValue(translation: PhysicsVector2, particles: PhysicsParticle[]) {
     let value = translation.x * this.factor.x + translation.y * this.factor.y;
 
     if (this.factor.angle > 0) {

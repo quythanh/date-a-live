@@ -1,21 +1,31 @@
+import type { Model } from "@hazart-pkg/live2d-core";
 import Physics from "./Physics";
 import PhysicsFactorTuple from "./PhysicsFactorTuple";
+import type PhysicsInput from "./PhysicsInput";
+import type PhysicsNormalizationOptions from "./PhysicsNormalizationOptions";
+import type PhysicsOutput from "./PhysicsOutput";
+import type PhysicsParticle from "./PhysicsParticle";
 import PhysicsVector2 from "./PhysicsVector2";
 
 export default class PhysicsSubRig {
-  public input;
-  public output;
-  public particles;
-  public normalization;
+  public input: PhysicsInput[];
+  public output: PhysicsOutput[];
+  public particles: PhysicsParticle[];
+  public normalization: PhysicsNormalizationOptions;
 
-  constructor(input, output, particles, normalization) {
+  constructor(
+    input: PhysicsInput[],
+    output: PhysicsOutput[],
+    particles: PhysicsParticle[],
+    normalization: PhysicsNormalizationOptions
+  ) {
     this.input = input;
     this.output = output;
     this.particles = particles;
     this.normalization = normalization;
   }
 
-  _update(deltaTime: number, target) {
+  _update(deltaTime: number, target: Model) {
     const parameters = target.parameters;
     let factor = new PhysicsFactorTuple(0, 0, 0);
 
@@ -90,7 +100,7 @@ export default class PhysicsSubRig {
     });
   }
 
-  _evaluate(target) {
+  _evaluate(target: Model) {
     const parameters = target.parameters;
 
     for (const o of this.output) {

@@ -1,13 +1,19 @@
 import Physics from "./Physics";
 import PhysicsFactorTuple from "./PhysicsFactorTuple";
+import type PhysicsNormalizationOptions from "./PhysicsNormalizationOptions";
 
 export default class PhysicsInput {
-  public targetId;
+  public targetId: string;
   public weight: number;
-  public factor;
-  public invert;
+  public factor: PhysicsFactorTuple;
+  public invert: boolean;
 
-  constructor(targetId, weight: number, factor, invert) {
+  constructor(
+    targetId: string,
+    weight: number,
+    factor: PhysicsFactorTuple,
+    invert: boolean
+  ) {
     this.targetId = targetId;
     this.weight = weight;
     this.factor = factor;
@@ -19,11 +25,11 @@ export default class PhysicsInput {
   }
 
   evaluateFactor(
-    parameterValue,
-    parameterMinimum,
-    parameterMaximum,
-    parameterDefault,
-    normalization,
+    parameterValue: number,
+    parameterMinimum: number,
+    parameterMaximum: number,
+    _: number,
+    normalization: PhysicsNormalizationOptions,
   ) {
     console.assert(parameterMaximum > parameterMinimum);
     const parameterMiddle = this.getMiddleValue(

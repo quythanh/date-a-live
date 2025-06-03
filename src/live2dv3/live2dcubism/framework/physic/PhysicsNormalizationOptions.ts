@@ -1,8 +1,10 @@
-export default class PhysicsNormalizationOptions {
-  public position;
-  public angle;
+import type PhysicsNormalizationTuple from "./PhysicsNormalizationTuple";
 
-	constructor(position, angle) {
+export default class PhysicsNormalizationOptions {
+  public position: PhysicsNormalizationTuple;
+  public angle: PhysicsNormalizationTuple;
+
+	constructor(position: PhysicsNormalizationTuple, angle: PhysicsNormalizationTuple) {
 		this.position = position;
 		this.angle = angle;
 	}
