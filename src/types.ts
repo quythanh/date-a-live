@@ -102,3 +102,28 @@ export type PhysicObject = {
   Meta: PhysicsMeta;
   PhysicsSettings: PhysicsSetting[];
 }
+
+type MotionMeta = {
+  Duration: number;
+  Fps: number;
+  Loop: boolean;
+  AreBeziersRestricted: boolean;
+  CurveCount: number;
+  TotalSegmentCount: number;
+  TotalPointCount: number;
+  UserDataCount: number;
+  TotalUserDataSize: number;
+}
+
+type MotionCurve = {
+  Target: string;
+  Id: string;
+  Segments: number[];
+}
+
+export type MotionObject = {
+  Version: number;
+  Meta: MotionMeta;
+  Curves: MotionCurve[];
+  UserData?: any;
+}

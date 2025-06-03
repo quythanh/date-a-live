@@ -4,16 +4,25 @@ import AnimationTrack from "./AnimationTrack";
 import AnimationUserDataBody from "./AnimationUserDataBody";
 import BuiltinAnimationSegmentEvaluators from "../builtin/BuiltinAnimationSegmentEvaluators";
 import type { AnimationBlender } from "../type";
+import type { MotionObject } from "../../../../types";
+import type Groups from "../group/Groups";
+import type { Model } from "@hazart-pkg/live2d-core";
 
 export default class Animation {
   public duration: number;
+  public fps: number;
   public loop: boolean;
+  public userDataCount: number;
+  public totalUserDataSize: number;
   public modelTracks: AnimationTrack[];
   public parameterTracks: AnimationTrack[];
   public partOpacityTracks: AnimationTrack[];
   public userDataBodys: AnimationUserDataBody[];
 
-  constructor(motion3Json) {
+  private _callbackFunctions: ((value: number) => any)[];
+  private _lastTime: number;
+
+  constructor(motion3Json: MotionObject) {
     this.modelTracks = [];
     this.parameterTracks = [];
     this.partOpacityTracks = [];
@@ -23,6 +32,8 @@ export default class Animation {
     this.loop = motion3Json.Meta.Loop;
     this.userDataCount = motion3Json.Meta.UserDataCount;
     this.totalUserDataSize = motion3Json.Meta.TotalUserDataSize;
+    this._callbackFunctions = [];
+    this._lastTime = 0;
 
     if (motion3Json.UserData != null) {
       for (const u of motion3Json.UserData) {
@@ -69,27 +80,18 @@ export default class Animation {
     }
   }
 
-  static fromMotion3Json(motion3Json) {
-    if (motion3Json == null) {
-      return null;
-    }
-    const animation = new Animation(motion3Json);
-    return animation.isValid ? animation : null;
+  static fromMotion3Json(motion3Json: MotionObject) {
+    return new Animation(motion3Json);
   }
 
-  addAnimationCallback(callbackFunc) {
-    if (!this._callbackFunctions) {
-      this._callbackFunctions = [];
-    }
+  addAnimationCallback(callbackFunc: (value: number) => any) {
     this._callbackFunctions.push(callbackFunc);
   }
 
-  removeAnimationCallback(callbackFunc) {
-    if (this._callbackFunctions) {
-      const index = this._callbackFunctions.indexOf(callbackFunc);
-      if (index >= 0) {
-        this._callbackFunctions.splice(index, 1);
-      }
+  removeAnimationCallback(callbackFunc: (value: number) => any) {
+    const index = this._callbackFunctions.indexOf(callbackFunc);
+    if (index >= 0) {
+      this._callbackFunctions.splice(index, 1);
     }
   }
 
@@ -97,8 +99,8 @@ export default class Animation {
     this._callbackFunctions = [];
   }
 
-  callAnimationCallback(value) {
-    if (this._callbackFunctions?.length > 0) {
+  callAnimationCallback(value: number) {
+    if (this._callbackFunctions.length > 0) {
       for (const func of this._callbackFunctions) {
         func(value);
       }
@@ -106,7 +108,14 @@ export default class Animation {
   }
 
   // Not sure type of blend
-  evaluate(time: number, weight: number, blend: AnimationBlender, target, stackFlags, groups = null) {
+  evaluate(
+    time: number,
+    weight: number,
+    blend: AnimationBlender,
+    target: Model,
+    stackFlags: boolean[][],
+    groups: Groups | null = null
+  ) {
     if (weight <= 0.01) return;
 
     if (this.loop) {
@@ -174,7 +183,7 @@ export default class Animation {
       }
     }
 
-    if (this._callbackFunctions) {
+    if (this._callbackFunctions.length > 0) {
       for (const ud of this.userDataBodys) {
         if (
           this.isEventTriggered(ud.time, time, this._lastTime, this.duration)
@@ -195,9 +204,5 @@ export default class Animation {
       (timeEvaluate > 0 && timeEvaluate < timeForward) ||
       (timeEvaluate > timeBack && timeEvaluate < duration)
     );
-  }
-
-  get isValid() {
-    return true;
   }
 }

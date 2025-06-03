@@ -1,10 +1,11 @@
 import type Animation from "./Animation";
 import type { AnimationBlender, CrossfadeWeighter } from "../type";
 import type Groups from "../group/Groups";
+import type { Model } from "@hazart-pkg/live2d-core";
 
 export default class AnimationLayer {
   public blend: AnimationBlender;
-  public groups: Groups;
+  public groups: Groups | null;
   public weight: number;
   public weightCrossfade: CrossfadeWeighter;
 
@@ -93,7 +94,7 @@ export default class AnimationLayer {
     }
   }
 
-  _evaluate(target, stackFlags) {
+  _evaluate(target: Model, stackFlags: boolean[][]) {
     if (!this._animation) return;
 
     const weight = this.weight < 1 ? this.weight : 1;

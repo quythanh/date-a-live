@@ -27,6 +27,10 @@ export default class Animator {
   }
 
   addLayer(name: string, blender: AnimationBlender = BuiltinAnimationBlenders.OVERRIDE, weight = 1) {
+    if (this.groups === undefined) {
+      throw new Error("`groups` hasn't been assigned.");
+    }
+
     const layer = new AnimationLayer(
       weight,
       blender,
@@ -56,10 +60,8 @@ export default class Animator {
         l._update(deltaTime);
       }
     }
-    const paramStackFlags = new Array(this._target.parameters.count).fill(
-      false,
-    );
-    const partsStackFlags = new Array(this._target.parts.count).fill(false);
+    const paramStackFlags = new Array<boolean>(this._target.parameters.count).fill(false);
+    const partsStackFlags = new Array<boolean>(this._target.parts.count).fill(false);
     const stackFlags = [paramStackFlags, partsStackFlags];
 
     for (const l of this._layers.values()) {
