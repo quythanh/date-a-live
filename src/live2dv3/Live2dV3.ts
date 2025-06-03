@@ -19,26 +19,17 @@ type Live2dV3Args = {
   mobileLimit: boolean;
 }
 
-let favorPoint: number = 0;
+// let favorPoint: number = 0;
 let favorLevel: number = 1;
 
 export default class Live2dV3 {
-  public audio;
+  public audio: HTMLAudioElement;
   public basePath: string;
-  public bg;
+  public bg: string;
   public modelName: string;
   public folderName: string;
-  public canvas: HTMLDivElement;
   public app: Application;
   public model?: Model;
-  public animator;
-  public motions;
-  public children;
-
-  private _animator;
-  private _coreModel;
-  private _meshes;
-  private _physicsRig;
 
   private constructor({
     folderName,
@@ -92,10 +83,10 @@ export default class Live2dV3 {
 
     let isClick = false;
 
-    this.app.view.addEventListener("mousedown", () => {
+    this.app.view.addEventListener!("mousedown", () => {
       isClick = true;
     });
-    this.app.view.addEventListener("mousemove", (event) => {
+    this.app.view.addEventListener!("mousemove", (event: Event) => {
       if (isClick) {
         isClick = false;
         if (this.model) {
@@ -103,28 +94,24 @@ export default class Live2dV3 {
         }
       }
 
-      if (this.model) {
+      if (this.model && event instanceof MouseEvent) {
         const mouseX = this.model.position.x - event.offsetX;
         const mouseY = this.model.position.y - event.offsetY;
         this.model.pointerX = -mouseX / this.app.view.height;
         this.model.pointerY = -mouseY / this.app.view.width;
       }
     });
-    this.app.view.addEventListener("mouseup", (event: MouseEvent) => {
+    this.app.view.addEventListener!("mouseup", (event: Event) => {
       if (!this.model) return;
 
-      if (isClick) {
-        //dal model
+      if (isClick && event instanceof MouseEvent) {
         if (this.isHit("HitArea", event.offsetX, event.offsetY)) {
-          console.log("head");
           if (this.model.motions.get(`id_favor${favorLevel}_${1}`))
           this.startAnimation(`id_favor${favorLevel}_${1}`, "base");
         } else if (this.isHit("HitArea2", event.offsetX, event.offsetY)) {
-          console.log("pai");
           if (this.model.motions.get(`id_favor${favorLevel}_${2}`))
           this.startAnimation(`id_favor${favorLevel}_${2}`, "base");
         } else if (this.isHit("HitArea3", event.offsetX, event.offsetY)) {
-          console.log("idk");
           if (this.model.motions.get(`id_favor${favorLevel}_${3}`))
           this.startAnimation(`id_favor${favorLevel}_${3}`, "base");
         }
@@ -140,7 +127,6 @@ export default class Live2dV3 {
 
     this.bg = bg;
     this.model = model;
-    this.model.update = this._onUpdate;
     this.model.animator.addLayer(
       "base",
       BuiltinAnimationBlenders.OVERRIDE,
@@ -153,84 +139,24 @@ export default class Live2dV3 {
       fg.width *= ratio;
       fg.height *= ratio;
     }
-    if (foreground.height !== 1) {
-      __scaleFg(foreground);
-    }
+
+    if (foreground.height !== 1) __scaleFg(foreground);
     foreground.texture.baseTexture.on("loaded", () => {
       __scaleFg(foreground);
     });
+
     this.app.stage.addChild(foreground);
+
     bgEffect.backgroundManager(this.folderName, this);
     const waitBg = setInterval(() => {
       if (bgEffect.isLoaded) {
         clearInterval(waitBg);
-        this.app.stage.addChild(this.model);
-        this.app.stage.addChild(this.model.masks);
+        this.app.stage.addChild(this.model!);
+        this.app.stage.addChild(this.model!.masks);
       }
     }, 500);
 
     window.dispatchEvent(new Event('resize'));
-  }
-
-  private _onUpdate(delta: number) {
-    const deltaTime = 0.016 * delta;
-
-    if (!this.animator.isPlaying) {
-      const m = this.motions.get("idle");
-      this.animator.getLayer("base").play(m);
-    }
-    this._animator.updateAndEvaluate(deltaTime);
-
-    if (this.inDrag) {
-      this.addParameterValueById("ParamAngleX", this.pointerX * 30);
-      this.addParameterValueById("ParamAngleY", -this.pointerY * 30);
-      this.addParameterValueById("ParamBodyAngleX", this.pointerX * 10);
-      this.addParameterValueById("ParamBodyAngleY", -this.pointerY * 10);
-      this.addParameterValueById("ParamEyeBallX", this.pointerX);
-      this.addParameterValueById("ParamEyeBallY", -this.pointerY);
-    }
-
-    if (this._physicsRig) {
-      this._physicsRig.updateAndEvaluate(deltaTime);
-    }
-
-    this._coreModel.update();
-
-    let sort = false;
-    for (let m = 0; m < this._meshes.length; ++m) {
-      this._meshes[m].alpha = this._coreModel.drawables.opacities[m];
-      this._meshes[m].visible = Live2DCubismCore.Utils.hasIsVisibleBit(
-        this._coreModel.drawables.dynamicFlags[m],
-      );
-      if (
-        Live2DCubismCore.Utils.hasVertexPositionsDidChangeBit(
-          this._coreModel.drawables.dynamicFlags[m],
-        )
-      ) {
-        this._meshes[m].vertices = this._coreModel.drawables.vertexPositions[m];
-        this._meshes[m].dirtyVertex = true;
-      }
-      if (
-        Live2DCubismCore.Utils.hasRenderOrderDidChangeBit(
-          this._coreModel.drawables.dynamicFlags[m],
-        )
-      ) {
-        sort = true;
-      }
-    }
-
-    if (sort) {
-      this.children.sort((a, b) => {
-        const aIndex = this._meshes.indexOf(a);
-        const bIndex = this._meshes.indexOf(b);
-        const aRenderOrder = this._coreModel.drawables.renderOrders[aIndex];
-        const bRenderOrder = this._coreModel.drawables.renderOrders[bIndex];
-
-        return aRenderOrder - bRenderOrder;
-      });
-    }
-
-    this._coreModel.drawables.resetDynamicFlags();
   }
 
   startAnimation(motionId: string, layerId: string) {

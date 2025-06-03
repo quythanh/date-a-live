@@ -10,8 +10,10 @@ import type Groups from "../framework/group/Groups";
 import type UserData from "../framework/user/UserData";
 
 export default class Model extends Container<CubismMesh> {
-  public motions?: Map<string, Animation>;
+  public motions: Map<string, Animation>;
   public inDrag?: boolean;
+  public pointerX?: number;
+  public pointerY?: number;
 
   private _coreModel: CoreModel;
   private _textures: Texture[];
@@ -39,6 +41,7 @@ export default class Model extends Container<CubismMesh> {
     this._groups = groups;
     this._animator.groups = this._groups;
     this._meshes = new Array(this._coreModel.drawables.ids.length);
+    this.motions = new Map();
 
     for (let m = 0; m < this._meshes.length; ++m) {
       // console.log(Object.prototype.toString.call(this._coreModel.drawables.vertexUvs[m]));
@@ -131,15 +134,29 @@ export default class Model extends Container<CubismMesh> {
 
   update(delta: number) {
     const deltaTime = 0.016 * delta;
+
+    if (!this._animator.isPlaying) {
+      const _m = this.motions.get("idle")!;
+      this._animator.getLayer("base")?.play(_m);
+    }
     this._animator.updateAndEvaluate(deltaTime);
+
+    // if (this.inDrag && this.pointerX && this.pointerY) {
+    //   this.addParameterValueById("ParamAngleX", this.pointerX * 30);
+    //   this.addParameterValueById("ParamAngleY", -this.pointerY * 30);
+    //   this.addParameterValueById("ParamBodyAngleX", this.pointerX * 10);
+    //   this.addParameterValueById("ParamBodyAngleY", -this.pointerY * 10);
+    //   this.addParameterValueById("ParamEyeBallX", this.pointerX);
+    //   this.addParameterValueById("ParamEyeBallY", -this.pointerY);
+    // }
 
     if (this._physicsRig) {
       this._physicsRig.updateAndEvaluate(deltaTime);
     }
 
     this._coreModel.update();
-    let sort = false;
 
+    let sort = false;
     for (let m = 0; m < this._meshes.length; ++m) {
       const mesh = this._meshes[m];
       mesh.alpha = this._coreModel.drawables.opacities[m];
