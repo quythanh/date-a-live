@@ -127,3 +127,20 @@ export type MotionObject = {
   Curves: MotionCurve[];
   UserData?: any;
 }
+
+type UserDataMeta = {
+  UserDataCount: number;
+  TotalUserDataSize: number;
+}
+
+type UserData = {
+  Target: string;
+  Id: string;
+  Value: any;
+}
+
+export type UserDataObject = {
+  Version: number;
+  Meta: UserDataMeta;
+  UserData: UserData[];
+}

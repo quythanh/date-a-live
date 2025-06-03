@@ -1,22 +1,22 @@
+import type { Model } from "@hazart-pkg/live2d-core";
 import UserDataBody from "./UserDataBody";
+import type { UserDataObject } from "../../../../types";
 
 export default class UserData {
-  private _target;
+  private _target: Model;
   private _version: number;
-  private _userDataCount;
-  private _totalUserDataSize;
+  private _userDataCount: number;
+  private _totalUserDataSize: number;
   private _userDataBodys: UserDataBody[];
 
-  constructor(target, userData3Json) {
+  constructor(target: Model, userData3Json: UserDataObject) {
     this._target = target;
-
-    if (!target) {
-      return;
-    }
-
     this._version = userData3Json.Version;
     this._userDataCount = userData3Json.Meta.UserDataCount;
     this._totalUserDataSize = userData3Json.Meta.TotalUserDataSize;
+    this._userDataBodys = [];
+
+    console.log(this._target, this._version);
 
     if (userData3Json.UserData != null) {
       this._userDataBodys = userData3Json.UserData.map(
@@ -26,13 +26,8 @@ export default class UserData {
     }
   }
 
-  static _fromUserData3Json(target, userData3Json) {
-    const userdata = new UserData(target, userData3Json);
-    return userdata._isValid ? userdata : null;
-  }
-
-  get _isValid() {
-    return this._target != null;
+  static _fromUserData3Json(target: Model, userData3Json: UserDataObject) {
+    return new UserData(target, userData3Json);
   }
 
   get userDataCount() {
@@ -47,13 +42,13 @@ export default class UserData {
     return this._userDataBodys || null;
   }
 
-  isExistUserDataById(id_) {
+  isExistUserDataById(id_: string) {
     return this._userDataBodys
     ? this._userDataBodys.some((ud) => ud.id === id_)
     : false;
   }
 
-  getUserDataValueById(id_) {
+  getUserDataValueById(id_: string) {
     if (this._userDataBodys) {
       const ud = this._userDataBodys.find((ud) => ud.id === id_);
       return ud ? ud.value : null;
@@ -61,7 +56,7 @@ export default class UserData {
     return null;
   }
 
-  getUserDataTargetById(id_) {
+  getUserDataTargetById(id_: string) {
     if (this._userDataBodys) {
       const ud = this._userDataBodys.find((ud) => ud.id === id_);
       return ud ? ud.target : null;
@@ -69,7 +64,7 @@ export default class UserData {
     return null;
   }
 
-  getUserDataBodyById(id_) {
+  getUserDataBodyById(id_: string) {
     if (this._userDataBodys) {
       return this._userDataBodys.find((ud) => ud.id === id_) || null;
     }
