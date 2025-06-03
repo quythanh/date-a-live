@@ -21,11 +21,11 @@ const BuiltinAnimationSegmentEvaluators: {
     return _lerp(p012, p123, t).value;
   },
 
-  STEPPED: (points: AnimationPoint[], offset: number, time: number) => {
+  STEPPED: (points: AnimationPoint[], offset: number, _: number) => {
     return points[offset + 0].value;
   },
 
-  INVERSE_STEPPED: (points: AnimationPoint[], offset: number, time: number) => {
+  INVERSE_STEPPED: (points: AnimationPoint[], offset: number, _: number) => {
     return points[offset + 1].value;
   },
 }
