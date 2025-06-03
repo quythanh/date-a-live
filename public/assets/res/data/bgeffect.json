@@ -202,11 +202,11 @@
       "path": "effect/dating/ui_superKanban_10607/main_effect_10607",
       "action": "main_effect_10607_down"
     },
-    "0": {
+    "1": {
       "path": "effect/dating/ui_superKanban_10607/main_effect_10607",
       "action": "animation"
     },
-    "0": {
+    "2": {
       "path": "effect/dating/ui_superKanban_10607/main_effect_10607",
       "action": "main_effect_10607_up"
     }
@@ -358,7 +358,7 @@
       "path": "effect/dating/ui_superKanban_12202/effect_main_12202",
       "action": "animation2"
     },
-    "0":{
+    "1":{
       "path": "effect/dating/ui_superKanban_12202/effect_main_12202",
       "action": "animation"
     }
