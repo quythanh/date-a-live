@@ -9,7 +9,7 @@ import type PhysicsRig from "../framework/physic/PhysicsRig";
 import type Groups from "../framework/group/Groups";
 import type UserData from "../framework/user/UserData";
 
-export default class Model extends Container {
+export default class Model extends Container<CubismMesh> {
   public motions?: Map<string, Animation>;
   public inDrag?: boolean;
 
@@ -38,12 +38,6 @@ export default class Model extends Container {
     this._userData = userData;
     this._groups = groups;
     this._animator.groups = this._groups;
-    this._meshes = [];
-
-    if (this._coreModel == null) {
-      return;
-    }
-
     this._meshes = new Array(this._coreModel.drawables.ids.length);
 
     for (let m = 0; m < this._meshes.length; ++m) {

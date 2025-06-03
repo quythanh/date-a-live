@@ -1,4 +1,4 @@
-import { Container, DRAW_MODES, Filter, RenderTexture, Sprite, type IDestroyOptions } from "pixi.js";
+import { Container, DRAW_MODES, Filter, RenderTexture, Sprite, type IDestroyOptions, type IRenderer } from "pixi.js";
 import type { Model as CoreModel } from "@hazart-pkg/live2d-core";
 import CubismMesh from "./CubismMesh";
 import type Model from "./Model";
@@ -81,16 +81,20 @@ export default class MaskSpriteContainer extends Container {
     return this._maskMeshContainers;
   }
 
-  destroy(options?: IDestroyOptions | boolean) {
+  destroy(_?: IDestroyOptions | boolean) {
     this._maskSprites.forEach((m) => m.destroy());
     this._maskTextures.forEach((m) => m.destroy());
     this._maskMeshContainers.forEach((m) => m.destroy());
     this._maskShader.destroy();
   }
 
-  update(appRenderer) {
+  update(appRenderer: IRenderer) {
     for (let m = 0; m < this._maskSprites.length; ++m) {
-      appRenderer.render(this._maskMeshContainers[m], this._maskTextures[m], true, null, false);
+      appRenderer.render(this._maskMeshContainers[m], {
+        renderTexture: this._maskTextures[m],
+        clear: true,
+        skipUpdateTransform: false
+      });
     }
   }
 

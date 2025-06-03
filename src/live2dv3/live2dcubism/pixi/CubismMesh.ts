@@ -12,6 +12,7 @@ type SimpleMeshArg = [
 export default class CubismMesh extends SimpleMesh {
   public isCulling: boolean;
   public isMaskMesh: boolean;
+  public dirtyVertex?: boolean;
 
   constructor(...args: SimpleMeshArg) {
     super(...args);
