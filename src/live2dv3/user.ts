@@ -12,6 +12,7 @@ type TLive2DViewer = {
   loadMotion: (model: string) => void;
   init: () => void;
   initModel: () => void;
+  loadOptsFromDataUrl: (url: string, selectElQuery: string) => void;
 }
 
 // opt
@@ -51,20 +52,19 @@ const Live2DViewer: TLive2DViewer = {
     $("#motions").val("idle").trigger("change");
   },
 
-  init: () => {
-    const models = JSON.parse(httpGet('assets/res/data/live2dv3_models.json'));
-    for (const i in models) {
+  loadOptsFromDataUrl: (url, selectElQuery) => {
+    $(selectElQuery).text('');
+    const data: { [key: string]: string } = JSON.parse(httpGet(url));
+    for (const [key, value] of Object.entries(data)) {
       const opt = document.createElement('option');
-      opt.value = i;
-      opt.innerHTML = models[i];
-      $('#models').append(opt);
+      opt.value = key;
+      opt.textContent = value;
+      $(selectElQuery).append(opt);
     }
-    folderName = $("#models option:selected").val() as string;
-    modelName = folderName.replace(folderName.split('_')[2], 'new');
+    $(selectElQuery).trigger('change');
+  },
 
-    // check _new first
-    Live2DViewer.loadMotion(`assets/res/basic/modle/bust_kanban/${folderName}/${modelName}.model3.json`);
-
+  init: () => {
     // bg3
     BackgroundMenu.changeCategory(BackgroundType.normal);
 
@@ -90,6 +90,13 @@ const Live2DViewer: TLive2DViewer = {
         }
       });
     });
+
+    $('#characters').on("change", (e) => {
+      const el = $(e.target);
+      Live2DViewer.loadOptsFromDataUrl(`assets/res/data/models/${el.val()}.json`, '#models');
+    });
+
+    Live2DViewer.loadOptsFromDataUrl('assets/res/data/models/metadata.json', '#characters');
 
     // onchange motions
     $('#motions').on("change", () => {
