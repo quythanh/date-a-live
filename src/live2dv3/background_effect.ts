@@ -1,8 +1,8 @@
-import $ from 'jquery';
+import $ from "jquery";
 import { httpGet } from "../utility";
 import { Assets } from "pixi.js";
-import { Spine } from 'pixi-spine';
-import type Live2dV3 from './Live2dV3';
+import { Spine } from "pixi-spine";
+import type Live2dV3 from "./Live2dV3";
 //backup abyss diva, because it will throw an error if enable it
 /*
 pixi-spine.js:4717 Uncaught Error: Invalid timeline type for a bone: flipX (yu3)
@@ -47,7 +47,7 @@ action = "texiao_qian",
 type BackgroundEffectData = {
   url: string;
   state: string;
-}
+};
 
 type BackgroundEffect = {
   list: {
@@ -55,8 +55,8 @@ type BackgroundEffect = {
       x: number;
       y: number;
       scale: number;
-    }
-  },
+    };
+  };
   isLoaded: boolean;
   backgroundManager: (model: string, l2dViewer: Live2dV3) => void;
   addEffect: (data: BackgroundEffectData[], l2dViewer: Live2dV3) => void;
@@ -64,7 +64,7 @@ type BackgroundEffect = {
   changePosX: (index: number, value: number, l2dViewer: Live2dV3) => void;
   changePosY: (index: number, value: number, l2dViewer: Live2dV3) => void;
   changeScale: (index: number, value: number, l2dViewer: Live2dV3) => void;
-}
+};
 
 const charaEffect = JSON.parse(httpGet("assets/res/data/bgeffect.json"));
 
@@ -81,7 +81,7 @@ const bgEffect: BackgroundEffect = {
       for (const i in charaEffect[model]) {
         tempArr.push({
           url: `assets/res/basic/${charaEffect[model][i].path}.json`,
-          state: charaEffect[model][i].action
+          state: charaEffect[model][i].action,
         });
       }
       bgEffect.addEffect(tempArr, l2dViewer);
@@ -95,6 +95,8 @@ const bgEffect: BackgroundEffect = {
       for (let i = 0; i < data.length; i++) {
         const { url, state } = data[i];
         const _spine = await Assets.load(url);
+        console.log(_spine);
+        console.log(Assets.load);
         const s = new Spine(_spine.spineData);
 
         // to do idk how to automaticly set based resolution, so i'll set this for by screen reso / 2
@@ -115,68 +117,70 @@ const bgEffect: BackgroundEffect = {
   },
 
   addSetting: (l2dViewer: Live2dV3) => {
-    $('#bg-effect').text('');
-    let n = l2dViewer.app.stage.children.findIndex(c => c.constructor.name === "Spine");
+    $("#bg-effect").text("");
+    let n = l2dViewer.app.stage.children.findIndex(
+      (c) => c.constructor.name === "Spine",
+    );
 
     for (const i in bgEffect.list) {
-      const div = document.createElement('div');
-      div.classList.add('l2dv3-collapsible');
+      const div = document.createElement("div");
+      div.classList.add("l2dv3-collapsible");
 
-      const x = document.createElement('input');
-      x.type = 'number';
-      x.min = '0';
+      const x = document.createElement("input");
+      x.type = "number";
+      x.min = "0";
       x.value = bgEffect.list[i].x.toString();
       x.id = x.name = `${i}x`;
 
-      const y = document.createElement('input');
-      y.type = 'number';
-      y.min = '0';
+      const y = document.createElement("input");
+      y.type = "number";
+      y.min = "0";
       y.value = bgEffect.list[i].y.toString();
       y.id = y.name = `${i}y`;
 
-      const scale = document.createElement('input');
-      scale.type = 'number';
-      scale.min = '50';
+      const scale = document.createElement("input");
+      scale.type = "number";
+      scale.min = "50";
       scale.value = (bgEffect.list[i].scale * 100).toString();
       scale.id = scale.name = `${i}scale`;
 
       //label
-      const label1 = document.createElement('label');
-      label1.htmlFor = x.name
-      label1.textContent = 'X';
-      const label2 = document.createElement('label');
-      label2.htmlFor = y.name
-      label2.textContent = 'Y';
-      const label3 = document.createElement('label');
-      label3.htmlFor = scale.name
-      label3.textContent = 'Scale';
+      const label1 = document.createElement("label");
+      label1.htmlFor = x.name;
+      label1.textContent = "X";
+      const label2 = document.createElement("label");
+      label2.htmlFor = y.name;
+      label2.textContent = "Y";
+      const label3 = document.createElement("label");
+      label3.htmlFor = scale.name;
+      label3.textContent = "Scale";
 
       //to do customization effect
-      x.setAttribute('index', n.toString());
-      y.setAttribute('index', n.toString());
-      scale.setAttribute('index', n.toString());
+      x.setAttribute("index", n.toString());
+      y.setAttribute("index", n.toString());
+      scale.setAttribute("index", n.toString());
 
       const __change = (
-        fn: (index: number, value: number, l2dViewer: Live2dV3) => void
+        fn: (index: number, value: number, l2dViewer: Live2dV3) => void,
       ) => {
         return (e: Event) => {
           const el = e.target as HTMLInputElement;
-          const index = Number.parseInt(el.getAttribute('index')!);
+          const index = Number.parseInt(el.getAttribute("index")!);
           const value = Number.parseInt(el.value);
           fn(index, value, l2dViewer);
-        }
-      }
+        };
+      };
       x.onchange = __change(bgEffect.changePosX);
       y.onchange = __change(bgEffect.changePosY);
       scale.onchange = __change(bgEffect.changeScale);
 
       //t
-      let t = document.createElement('div');
-      let t1 = document.createElement('div');
-      let t2 = document.createElement('div');
-      let mainButton = document.createElement('button');
-      mainButton.classList.add('l2dv3-collapsible-main');
-      mainButton.classList.add('customButton');
+      let t = document.createElement("div");
+      let t1 = document.createElement("div");
+      let t2 = document.createElement("div");
+      let mainButton = document.createElement("button");
+      mainButton.classList.add("l2dv3-collapsible-main");
+      mainButton.classList.add("customButton");
       mainButton.textContent = i;
 
       t.appendChild(x);
@@ -192,13 +196,13 @@ const bgEffect: BackgroundEffect = {
       div.appendChild(label3);
 
       div.appendChild(t2);
-      $('#bg-effect').append(mainButton)
-      $('#bg-effect').append(div);
+      $("#bg-effect").append(mainButton);
+      $("#bg-effect").append(div);
       n++;
     }
 
     bgEffect.isLoaded = true;
-    $('.l2dv3-collapsible-main').on("click", (e: JQuery.TriggeredEvent) => {
+    $(".l2dv3-collapsible-main").on("click", (e: JQuery.TriggeredEvent) => {
       const el = e.target as HTMLButtonElement;
       const content = el.nextElementSibling as HTMLDivElement;
 
@@ -206,10 +210,10 @@ const bgEffect: BackgroundEffect = {
         content.style.lineHeight = "normal";
         content.style.height = "150px";
       } else {
-        content.style.lineHeight = '0';
-        content.style.height = '0';
+        content.style.lineHeight = "0";
+        content.style.height = "0";
       }
-    })
+    });
   },
 
   changePosX: (index: number, value: number, l2dViewer: Live2dV3) => {

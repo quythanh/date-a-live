@@ -1,6 +1,6 @@
 import type { Model } from "@hazart-pkg/live2d-core";
 import UserData from "./UserData";
-import type { UserDataObject } from "../../../../types";
+import type { UserDataObject } from "@/types";
 
 export default class UserDataBuilder {
   private _target?: Model;
